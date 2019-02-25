@@ -71,8 +71,9 @@ class Bank_account(db.Model):
     interest_rate = db.Column(db.Integer, nullable=False)
     interest_period = db.Column(db.String(30), nullable = False)
     transactions_ba = db.relationship('Transaction_bank_account', backref=db.backref('Bank_account', uselist=False))
+    
     def __repr__(self):
-        return '<Bank Account %r>' % self.bank_name + " " + self.account_digits
+        return '<Bank Account %r %r>' % (self.bank_name, self.account_digits)
 
 class Transaction_bank_account(db.Model):
     transaction_ba_id =  db.Column(db.Integer, primary_key=True)
@@ -231,7 +232,13 @@ def database_test():
     transaction_selected_re = Transaction.query.filter_by(transaction_type='Real Estate').first()
     # print(transaction_selected_re.account_id)
     
-
+    bank_account_test = Bank_account(bank_name='USAA',account_digits=1234,interest_rate=2,interest_period='Month')
+    print(Bank_account.query.filter_by(bank_name='USAA').first())
+    db.session.add(bank_account_test)
+    db.session.commit()
+    print(Bank_account.query.get(1))
+    bank_account_selected = Bank_account.query.filter_by(bank_name='USAA').first()
+    print(bank_account_selected.bank_name)
 
 
 db.drop_all()
@@ -239,5 +246,6 @@ db.create_all()
 db.session.query(Account).delete()
 db.session.query(User).delete()
 db.session.query(Transaction).delete()
+db.session.query(Bank_account).delete()
 db.session.commit()
 database_test()
