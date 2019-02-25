@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
+from datetime import date
 
 
 @event.listens_for(Engine, "connect")
@@ -38,14 +39,13 @@ class Account(db.Model):
     def __repr__(self):
         return '<Account %r>' % self.account_name
     
-
 class Transaction(db.Model):
     transaction_id = db.Column(db.Integer, primary_key=True)
     account_id = db.Column(db.Integer, db.ForeignKey(Account.account_id))
     transaction_type = db.Column(db.String(30), nullable=False)
     transaction_value = db.Column(db.Integer, nullable=False)
-    transaction_date = db.Column(db.Date, nullable=False)
-    transaction_time = db.Column(db.Time, nullable=False)
+    transaction_date = db.Column(db.Date, nullable=False, default=date.today())
+    # transaction_time = db.Column(db.Time, nullable=False)
     transaction_note = db.Column(db.String(80))
     transactions_ba = db.relationship('Transaction_bank_account', backref=db.backref('Transaction', uselist=True))
     transactions_re = db.relationship('Transaction_real_estate', backref=db.backref('Transaction', uselist=True))
@@ -67,11 +67,11 @@ class Bank_account(db.Model):
     def __repr__(self):
         return '<Bank Account %r>' % self.bank_name + " " + self.account_digits
 
-
 class Transaction_bank_account(db.Model):
     transaction_ba_id =  db.Column(db.Integer, primary_key=True)
     transaction_id = db.Column(db.Integer, db.ForeignKey(Transaction.transaction_id))
     bank_account_id = db.Column(db.Integer, db.ForeignKey(Bank_account.bank_account_id))
+
 
 class Debt(db.Model):
     debt_id = db.Column(db.Integer, primary_key=True)
@@ -84,7 +84,6 @@ class Debt(db.Model):
     transactions_debt = db.relationship('Transaction_debt', backref=db.backref('Debt', uselist=False))
     def __repr__(self):
         return '<Debt %r>' % self.lender
-
 
 class Transaction_debt(db.Model):
     transaction_debt_id = db.Column(db.Integer, primary_key=True)
@@ -100,7 +99,6 @@ class Real_estate(db.Model):
     transactions_re = db.relationship('Transaction_real_estate', backref=db.backref('Real_estate', uselist=False))
     def __repr__(self):
         return '<Real Estate %r>' % self.name
-
 
 class Transaction_real_estate(db.Model):
     transaction_re_id = db.Column(db.Integer, primary_key=True)
@@ -139,13 +137,11 @@ class Stock_value(db.Model):
     date = db.Column(db.Date, nullable=False)
     value = db.Column(db.Integer, nullable=False)
 
-
 class Transaction_stock(db.Model):
     transaction_stock_id = db.Column(db.Integer, primary_key=True)
     transaction_id = db.Column(db.Integer, db.ForeignKey(Transaction.transaction_id))
     stock_id = db.Column(db.Integer, db.ForeignKey(Stock.stock_id))
     
-
 
 class Tag(db.Model):
     tag_id = db.Column(db.Integer, primary_key=True)
@@ -155,14 +151,11 @@ class Tag(db.Model):
     def __repr__(self):
         return '<Tag %r>' % self.tag_name
 
-
 class Transaction_tag(db.Model):
     transaction_tag_id = db.Column(db.Integer, primary_key=True)
     transaction_id = db.Column(db.Integer, db.ForeignKey(Transaction.transaction_id))
     tag_id = db.Column(db.Integer, db.ForeignKey(Tag.tag_id))
     
-
-
 class Account_tag(db.Model):
     account_tag_id = db.Column(db.Integer, primary_key=True)
     account_id = db.Column(db.Integer, db.ForeignKey(Account.account_id))
@@ -170,38 +163,71 @@ class Account_tag(db.Model):
     
 
 
-
-
 def database_test():
     #Test 1: Add and retrieve values from each table
     user_test = User_db(user_name='test', pass_hash='password')
-    print(User_db.query.filter_by(user_name='test').first())
+    # print(User_db.query.filter_by(user_name='test').first())
     db.session.add(user_test)
     db.session.commit()
-    print(User_db.query.get(1))
+    # print(User_db.query.get(1))
     user_selected = User_db.query.filter_by(user_name='test').first()
-    print(user_selected.user_id)
+    # print(user_selected.user_id)
 
     account_test = Account(user_id=user_selected.user_id, account_name='tester', account_type='Savings')
-    print(Account.query.filter_by(account_type='Savings').first())
+    # print(Account.query.filter_by(account_type='Savings').first())
     db.session.add(account_test)
     db.session.commit()
     account_test = Account(user_id=user_selected.user_id, account_name='tester2', account_type='Savings')
-    print(Account.query.filter_by(account_type='Savings').first())
+    # print(Account.query.filter_by(account_type='Savings').first())
     db.session.add(account_test)
     db.session.commit()  
-    print(Account.query.get(1))
+    # print(Account.query.get(1))
     account_selected = Account.query.filter_by(account_type='Savings').first()
-    print(account_selected.account_name)
-    print(account_selected.user_id)
-    print(user_selected.accounts)
-    print(User_db.query.filter_by(user_id=user_selected.user_id).all())
-    print(Account.query.filter_by(account_type='Savings').all())
+    # print(account_selected.account_name)
+    # print(account_selected.user_id)
+    # print(user_selected.accounts)
+    # print(User_db.query.filter_by(user_id=user_selected.user_id).all())
+    # print(Account.query.filter_by(user_id=user_selected.user_id).all())
+
+    transaction_test = Transaction(account_id=account_selected.account_id, transaction_type='Cash', transaction_value=50)
+    # print(Transaction.query.filter_by(account_id=1).first())
+    db.session.add(transaction_test)
+    db.session.commit()
+    transaction_test = Transaction(account_id=account_selected.account_id, transaction_type='Debt', transaction_value=50)
+    # print(Transaction.query.filter_by(account_id=1).first())
+    db.session.add(transaction_test)
+    db.session.commit()
+    transaction_test = Transaction(account_id=account_selected.account_id, transaction_type='Bond', transaction_value=50)
+    # print(Transaction.query.filter_by(account_id=1).first())
+    db.session.add(transaction_test)
+    db.session.commit()
+    transaction_test = Transaction(account_id=account_selected.account_id, transaction_type='Stock', transaction_value=50)
+    # print(Transaction.query.filter_by(account_id=1).first())
+    db.session.add(transaction_test)
+    db.session.commit()
+    transaction_test = Transaction(account_id=account_selected.account_id, transaction_type='Real Estate', transaction_value=50)
+    # print(Transaction.query.filter_by(account_id=1).first())
+    db.session.add(transaction_test)
+    db.session.commit()
+    # print(Transaction.query.filter_by(account_id=1).all())
+    transaction_selected_stock = Transaction.query.filter_by(transaction_type='Stock').first()
+    # print(transaction_selected_stock.account_id)
+    transaction_selected_bond = Transaction.query.filter_by(transaction_type='Bond').first()
+    # print(transaction_selected_bond.account_id)
+    transaction_selected_cash = Transaction.query.filter_by(transaction_type='Cash').first()
+    # print(transaction_selected_cash.account_id)
+    transaction_selected_debt = Transaction.query.filter_by(transaction_type='Debt').first()
+    # print(transaction_selected_debt.account_id)
+    transaction_selected_re = Transaction.query.filter_by(transaction_type='Real Estate').first()
+    # print(transaction_selected_re.account_id)
+    
+
 
 
 db.drop_all()
 db.create_all()
 db.session.query(Account).delete()
 db.session.query(User_db).delete()
+db.session.query(Transaction).delete()
 db.session.commit()
 database_test()
