@@ -1,0 +1,100 @@
+body {
+    background-color: #1d1e22;
+    font-family: "Times New Roman", Times, serif;
+    color: white;
+
+}
+
+h1, h2 {
+    font-weight: normal;
+}
+
+
+/*
+ * SIDEBAR NAVIGATION
+ */
+.sidenav {
+    height: 100%;
+    width: 300px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #d4d4dc;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidenav a {
+    background-color: #ebca66;
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    color: white;
+    font-size: 25px;
+    display: block;
+}
+
+.sidenav a:hover {
+    background-color: #1d1e22;
+    transition: 0.3s;
+}
+
+.sidenav ul {
+    list-style-type: none;
+    color: #1d1e22;
+}
+
+.sidenav button {
+    background: none;
+    border: none;
+    padding: 6px 8px 6px 40px;
+    text-decoration: none;
+    font-family: "Times New Roman", Times, serif;
+    color: #1d1e22;
+    font-size: 20px;
+    display: block;
+}
+
+.sidenav button:hover {
+    color: white;
+    transition: 0.3s;
+}
+
+.main {
+    margin-left: 300px; /* Same as the width of the sidenav */
+    font-size: 28px; /* Increased text to enable scrolling */
+    padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+.display-countworth {
+    background: #d4d4dc;
+    color: #1d1e22;
+    text-align: center;
+}
+
+.chart {
+    background-color: white;
+    width: 75%;
+}
+
+table {
+  background: white;
+  border-collapse: collapse;
+  width: 75%;
+  color: #1d1e22;
+}
+
+td, th {
+  border: 1px solid #d4d4dc
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #d4d4dc;
+}

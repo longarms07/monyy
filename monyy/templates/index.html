@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+
+  <head>
+    <title>Monyy</title>
+    <script src="../static/js/Chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+
+    <body>
+
+        <!-----------------------
+            SIDEBAR NAVIGATION
+        ------------------------->
+        <div class="sidenav">
+
+            <!-- CASH / BANK ACCOUNTS -->
+            <a href="#cash">
+                <img src="../static/img/bank.png" alt="Bank">
+                 Cash
+             </a>
+            <!-- Top 3 bank accounts in descending order by amount of cash should be displayed.
+                 When clicked, they should bring the user to the part of the web page that displays bank account information.
+                 I'm thinking there's a drop down menu the user can use to select an account.
+                 Then, the graph/other information will change accordingly. -->
+            <button type="button">Stub Acct 1 (...1172)</button>
+            <button type="button">Stub Acct 2 (...3428)</button>
+            <button type="button">Stub Acct 3 (...4235)</button>
+            <!-- When view all is clicked, the menu should expand to display all accts.
+                 When expanded, a "Collapse" button should display underneath all accts.
+                 When collapsed, menu should return to top 3 -->
+            <center>
+            <button type="button" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button">+ Add Bank Account</button>
+            <br/>
+
+            <!-- STOCKS -->
+            <a href="#stocks">
+                <img src="../static/img/chart.png" alt="Stock Chart">
+                 Stocks</a>
+            <button type="button">STUB1</button>
+            <button type="button">STUB2</button>
+            <button type="button">STUB3</button>
+            <center>
+            <button type="button" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button">+ Add Stock</button>
+            <br/>
+
+            <!-- BONDS -->
+            <a href="#bonds">
+                <img src="../static/img/bonds.png" alt="Bond"> 
+                Bonds
+            </a>
+            <button type="button">Bond1</button>
+            <button type="button">Bond2</button>
+            <button type="button">Bond3</button>
+            <center>
+            <button type="button" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button">+ Add Bond</button>
+            <br/>
+
+            <!-- REAL ESTATE -->
+            <a href="#realestate">
+                <img src="../static/img/realestate.png" alt="Real Estate"> 
+                Real Estate
+            </a>
+            <button type="button">Address1</button>
+            <button type="button">Address2</button>
+            <button type="button">Address3</button>
+            <center>
+            <button type="button" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button">+ Add Real Estate</button>
+            <br/>
+
+            <!-- CRYPTOCURRENCY -->
+<!--             <a href="#cryptocurrency">
+                <img src="../static/img/bitcoin.png" alt="Bitcoin"> 
+                Cryptocurrency
+            </a>
+            <button type="button">Crypto1</button>
+            <button type="button">Crypto2</button>
+            <button type="button">Crypto3</button>
+            <center>
+            <button type="button" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button">+ Add Cryptocurrency</button>
+            <br/>
+ -->
+            <!-- DEBTS -->
+            <a href="#debts">
+                <img src="../static/img/debt.png" alt="Debt">
+                 Debt</a>
+            <button type="buton">Debt1</button>
+            <button type="buton">Debt2</button>
+            <button type="buton">Debt3</button>
+            <center>
+            <button type="button" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button">+ Add Debt</button>
+            <br/>
+            <br/>
+        </div>
+
+
+
+
+        <!---------------------
+            SUMMARY SECTIONS
+        ----------------------->
+        <div class="main">
+
+            <h2>Welcome, STUBdude.</h2>
+
+            <div class="display-countworth">
+                <h1> STUB# DAYS UNTIL BANKRUPTCY</h1>
+            </div>
+
+            <div class="display-countworth">
+                <h1> NET WORTH: $STUB#</h1>
+            </div>
+
+            <center>
+                <div class="chart">
+                    <canvas id="chart-networth" width="800" height="500"></canvas>
+                </div>
+            </center>
+
+
+            <!-- CASH -->
+            <h1>Cash</h1>
+
+            <select>
+                <option value="acct1">Stub Acct 1 (...1172)</option>
+                <option value="acct2">Stub Acct 2 (...3428)</option>
+                <option value="acct3">Stub Acct 3 (...4235)</option>
+            </select>
+
+            <!-- Summary summarized by a table -->
+            <center>
+                <h3>Chase Checking Account (...1772)</h3>
+
+                <table>
+                        <th>Date</th>
+                        <th>Transaction</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                    </tr>
+                    <tr>
+                        <td>2/14/2019</td>
+                        <td>Walmart</td>
+                        <td>54.21</td>
+                        <td>34253.77</td>
+                    </tr>
+                    <tr>
+                        <td>2/12/2019</td>
+                        <td>The nice men in NJ</td>
+                        <td>2278.98</td>
+                        <td>34307.98</td>
+
+                    </tr>
+                    <tr>
+                        <td>2/06/2019</td>
+                        <td>Deposit</td>
+                        <td>4000.00</td>
+                        <td>36586.96</td>
+                    </tr>
+                </table>
+            </center>
+
+            <br/>
+
+            <!-- STOCKS -->
+            <h2>Stocks</h2>
+
+            <select>
+                <option value="stock1">STUB1</option>
+                <option value="stock2">STUB2</option>
+                <option value="stock3">STUB3</option>
+            </select>
+
+            <!-- Stocks summarized by a line graph -->
+            <center>
+                <div class="chart">
+                    <canvas id="chart-stocks" width="800" height="500"></canvas>
+                </div>
+            </center>
+
+            <br/>
+
+            <!-- BONDS -->
+            <h2>Bonds</h2>
+
+            <center>
+                <table>
+                        <th>Name</th>
+                        <th>Maturity Date</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td>Some Name 1</td>
+                        <td>2/14/2030</td>
+                        <td>1000.00</td>
+                    </tr>
+                    <tr>
+                        <td>Some Name 2</td>
+                        <td>3/12/2021</td>
+                        <td>500.00</td>
+
+                    </tr>
+                    <tr>
+                        <td>Some Name 3</td>
+                        <td>7/10/2025</td>
+                        <td>5000.00</td>
+                    </tr>
+                </table>
+            </center>
+
+            <!-- REAL ESTATE -->
+            <h2>Real Estate</h2>
+
+            <center>
+                <table>
+                        <th>Name</th>
+                        <th>Maturity Date</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td>Some Name 1</td>
+                        <td>2/14/2030</td>
+                        <td>1000.00</td>
+                    </tr>
+                    <tr>
+                        <td>Some Name 2</td>
+                        <td>3/12/2021</td>
+                        <td>500.00</td>
+
+                    </tr>
+                    <tr>
+                        <td>Some Name 3</td>
+                        <td>7/10/2025</td>
+                        <td>5000.00</td>
+                    </tr>
+                </table>
+            </center>
+
+<!--             <h2>Cryptocurrency</h2>
+
+            <select>
+                <option value="crypto1">Crypto1</option>
+                <option value="crypto2">Crypto2</option>
+                <option value="crypto3">Crypto3</option>
+            </select> -->
+
+            <!-- DEBT -->
+            <h2>Debt</h2>
+
+            <center>
+                <table>
+                        <th>Name/Lender</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Period</th>
+                        <th>Payment Date</th>
+                        <th>Account Associated</th>
+                    </tr>
+                    <tr>
+                        <td>Some Name 1</td>
+                        <td>Principal 1</td>
+                        <td>Interest 1</td>
+                        <td>Period 1</td>
+                        <td>Payment Date 1</td>
+                        <td>Account Associated 1</td>
+                    </tr>
+                    <tr>
+                        <td>Some Name 2</td>
+                        <td>Principal 2</td>
+                        <td>Interest 2</td>
+                        <td>Period 2</td>
+                        <td>Payment Date 2</td>
+                        <td>Account Associated 2</td>
+                    </tr>
+                    <tr>
+                        <td>Some Name 3</td>
+                        <td>Principal 3</td>
+                        <td>Interest 3</td>
+                        <td>Period 3</td>
+                        <td>Payment Date 3</td>
+                        <td>Account Associated 3</td>
+                    </tr>
+                </table>
+            </center>
+
+
+    <script src="../static/js/monyy-script.js"></script>
+       
+    </body>
+</html> 
