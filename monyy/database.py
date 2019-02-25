@@ -20,17 +20,24 @@ app = Flask("monyy")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///monyy.db'
 db = SQLAlchemy(app)
 
-class User_db(db.Model):
+class User(UserMixin, db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(30), unique=True, nullable=False)
     pass_hash = db.Column(db.String(150), nullable=False)
-    accounts = db.relationship('Account', backref=db.backref('User_db', uselist=False))
+    accounts = db.relationship('Account', backref=db.backref('User', uselist=False))
+
+    def get_id(self):
+        return int(self.user_id)
+
+    def get_username(self):
+        return str(self.user_name)
+
     def __repr__(self):
         return '<User %r>' % self.user_name
 
 class Account(db.Model):
     account_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(User_db.user_id), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.user_id), nullable=False)
     account_name = db.Column(db.String(80), nullable=False)
     account_type = db.Column(db.String(30), nullable=False)
     transactions = db.relationship('Transaction', backref=db.backref('Account', uselist=True))
@@ -165,13 +172,16 @@ class Account_tag(db.Model):
 
 def database_test():
     #Test 1: Add and retrieve values from each table
-    user_test = User_db(user_name='test', pass_hash='password')
-    # print(User_db.query.filter_by(user_name='test').first())
+    user_test = User(user_name='test', pass_hash='password')
+    # print(User.query.filter_by(user_name='test').first())
     db.session.add(user_test)
     db.session.commit()
-    # print(User_db.query.get(1))
-    user_selected = User_db.query.filter_by(user_name='test').first()
+    # print(User.query.get(1))
+    user_selected = User.query.filter_by(user_name='test').first()
     # print(user_selected.user_id)
+    # print(user_selected.get_id())
+    # print(user_selected.get_username())
+
 
     account_test = Account(user_id=user_selected.user_id, account_name='tester', account_type='Savings')
     # print(Account.query.filter_by(account_type='Savings').first())
@@ -186,7 +196,7 @@ def database_test():
     # print(account_selected.account_name)
     # print(account_selected.user_id)
     # print(user_selected.accounts)
-    # print(User_db.query.filter_by(user_id=user_selected.user_id).all())
+    # print(User.query.filter_by(user_id=user_selected.user_id).all())
     # print(Account.query.filter_by(user_id=user_selected.user_id).all())
 
     transaction_test = Transaction(account_id=account_selected.account_id, transaction_type='Cash', transaction_value=50)
@@ -227,7 +237,7 @@ def database_test():
 db.drop_all()
 db.create_all()
 db.session.query(Account).delete()
-db.session.query(User_db).delete()
+db.session.query(User).delete()
 db.session.query(Transaction).delete()
 db.session.commit()
 database_test()
