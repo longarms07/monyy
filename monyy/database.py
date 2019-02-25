@@ -7,6 +7,7 @@ from sqlite3 import Connection as SQLite3Connection
 from datetime import date
 
 
+
 @event.listens_for(Engine, "connect")
 def _set_sqlite_pragma(dbapi_connection, connection_record):
     if isinstance(dbapi_connection, SQLite3Connection):
@@ -16,8 +17,9 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
 
 
 #from monyy import app
-app = Flask("monyy")
+from monyy import app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///monyy.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class User(UserMixin, db.Model):
@@ -241,11 +243,19 @@ def database_test():
     print(bank_account_selected.bank_name)
 
 
-db.drop_all()
+#db.drop_all()
 db.create_all()
+<<<<<<< HEAD
 db.session.query(Account).delete()
 db.session.query(User).delete()
 db.session.query(Transaction).delete()
 db.session.query(Bank_account).delete()
 db.session.commit()
 database_test()
+=======
+#db.session.query(Account).delete()
+#db.session.query(User).delete()
+#db.session.query(Transaction).delete()
+#db.session.commit()
+#database_test()
+>>>>>>> a2c472c78eec690c743449465908588c50fd89eb
