@@ -16,7 +16,7 @@ class User(db.Model):
 
 class Account(db.Model):
     account_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))#, nullable=False)
     account_name = db.Column(db.String(80), nullable=False)
     account_type = db.Column(db.String(30), nullable=False)
 
