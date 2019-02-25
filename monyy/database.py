@@ -16,7 +16,7 @@ class User(db.Model):
 
 class Account(db.Model):
     account_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     account_name = db.Column(db.String(80), nullable=False)
     account_type = db.Column(db.String(30), nullable=False)
 
@@ -158,11 +158,20 @@ def database_test():
     db.session.commit()
     print(User.query.get(1))
     user_selected = User.query.filter_by(user_name='test').first()
-    print(user_selected.user_name)
+    print(user_selected.user_id)
+
+    # account_test = Account(account_name='tester', account_type='Savings')
+    # print(Account.query.filter_by(account_type='Savings').first())
+    # db.session.add(account_test)
+    # db.session.commit() 
+    # print(Account.query.get(1))
+    # account_selected = Account.query.filter_by(account_type='Savings').first()
+    # print(account_selected.account_name)
 
 
 db.drop_all()
 db.create_all()
 db.session.query(User).delete()
+# db.session.query(Account).delete()
 db.session.commit()
 database_test()
