@@ -37,10 +37,12 @@ class BankAccountAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        
+        transactions = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account).join(Transaction).join(Transaction_bank_account).join(Bank_account).all()
         #Raise an exception if they have none
-
+        if len(transactions) == 0:
+            raise Exception("This user has no bank accounts!")
         #Return the list
+        return transactions
 
     #Get the current balance for an account
     def getBalance(temp_user, temp_account, temp_transaction, temp_date=date.today()):

@@ -25,8 +25,8 @@ def login():
             print(error)
             return redirect("/login")
         login_user(user, remember=form.remember_me.data)
-        return redirect("/")
-    return render_template('login_test.html', title='Sign In', form=form)
+        return redirect("/index")
+    return render_template('login.html', title='Sign In', form=form)
 
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
@@ -50,4 +50,9 @@ def register():
 def logout():
     logout_user()
     return redirect("/login")
+
+@app.route("/index")
+@login_required
+def index():
+    return render_template('index.html')
 

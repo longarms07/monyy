@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_login import UserMixin 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import event
+from sqlalchemy import event, func
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
 from datetime import date
@@ -338,26 +338,32 @@ def database_test():
     test_tag = Tag(tag_name='personal')
     db.session.add(test_tag)
     db.session.commit()
-    print(Tag.query.get(1))
+    #print(Tag.query.get(1))
     tag_selected = Tag.query.filter_by(tag_name='internal').first()
     tag_selected_two = Tag.query.filter_by(tag_name='personal').first()
-    print(tag_selected.tag_name)
+    #print(tag_selected.tag_name)
 
     test_trans_tag = Transaction_tag(transaction_id=transaction_selected_cash.transaction_id,tag_id=tag_selected.tag_id)
-    print(Transaction_tag.query.filter_by(tag_id=1).first())
+    #print(Transaction_tag.query.filter_by(tag_id=1).first())
     db.session.add(test_trans_tag)
     db.session.commit()
-    print(Transaction_tag.query.get(1))
+    #print(Transaction_tag.query.get(1))
     tag_trans_selected = Transaction_tag.query.filter_by(tag_id=1).first()
-    print(tag_trans_selected.transaction_id)
+    #print(tag_trans_selected.transaction_id)
 
     account_tag_test = Account_tag(account_id = account_selected.account_id, tag_id = tag_selected_two.tag_id)
-    print(Account_tag.query.filter_by(account_id=1).first())
+    #print(Account_tag.query.filter_by(account_id=1).first())
     db.session.add(account_tag_test)
     db.session.commit()
-    print(Account_tag.query.get(1))
+    #print(Account_tag.query.get(1))
     tag_account_selected = Account_tag.query.filter_by(account_id=1).first()
-    print(tag_account_selected.account_id)
+    #print(tag_account_selected.account_id)
+
+    join_test = db.session.query(Account, Transaction, Transaction_bank_account).join(Transaction).join(Transaction_bank_account).first()
+    #print(join_test)
+    #print(join_test.Transaction.transaction_id)
+    sum_test = db.session.query(func.sum(Transaction.transaction_value).label('balance')).filter_by(transaction_type='Cash').first()
+    #print(sum_test)
 
 
 db.drop_all()
