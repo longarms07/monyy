@@ -98,3 +98,16 @@ td, th {
 tr:nth-child(even) {
   background-color: #d4d4dc;
 }
+
+button {
+    backrgound-color: #d4d4dc;
+    border: none;
+    padding: 5px 10px;
+    font-family: "Times New Roman", Times, serif;
+    color: #1d1e22;
+}
+
+.button-table {
+    background-color: #1d1e22;
+    color: white;
+}
