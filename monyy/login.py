@@ -3,8 +3,8 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
-from .database import db, User
-from . import login_manager
+from .database import User
+from monyy import db, login_manager
 
 
 @login_manager.user_loader
