@@ -234,7 +234,7 @@ def database_test():
     # print(transaction_selected_re.account_id)
     
 
-    bank_account_test = Bank_account(bank_name='USAA',account_digits=1234,interest_rate=2,interest_period='Month')
+    bank_account_test = Bank_account(bank_name='USAA',account_digits=1234)
     # print(Bank_account.query.filter_by(bank_name='USAA').first())
     db.session.add(bank_account_test)
     db.session.commit()
@@ -359,11 +359,12 @@ def database_test():
     tag_account_selected = Account_tag.query.filter_by(account_id=1).first()
     #print(tag_account_selected.account_id)
 
-    join_test = db.session.query(Account, Transaction, Transaction_bank_account).join(Transaction).join(Transaction_bank_account).first()
+    join_test = db.session.query(Account, Transaction, Transaction_bank_account).filter_by(account_id=account_selected.account_id).join(Transaction).join(Transaction_bank_account).first()
     #print(join_test)
     #print(join_test.Transaction.transaction_id)
     sum_test = db.session.query(func.sum(Transaction.transaction_value).label('balance')).filter_by(transaction_type='Cash').first()
-    #print(sum_test)
+    sum_test = db.session.query(func.sum(Transaction.transaction_value).label('balance')).filter(Transaction.transaction_id<=12).first()
+    #print(sum_test.balance)
 
 
 db.drop_all()
@@ -386,4 +387,4 @@ db.session.query(Transaction_tag).delete()
 db.session.query(Tag).delete()
 db.session.query(Account_tag).delete()
 db.session.commit()
-database_test()
+#database_test()
