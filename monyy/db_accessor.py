@@ -39,7 +39,13 @@ class BankAccountAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account).filter_by(account_id=temp_account.account_id).join(Transaction).order_by(Transaction.transaction_id.desc()).join(Transaction_bank_account).join(Bank_account).all()
+        transactions = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_bank_account
+            ).join(Bank_account
+            ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no transactions!")
@@ -54,7 +60,15 @@ class BankAccountAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account).filter_by(account_id=temp_account.account_id).join(Transaction).order_by(Transaction.transaction_date.desc()).order_by(Transaction.transaction_id.desc()).join(Transaction_bank_account).join(Bank_account).limit(temp_limit).all()
+        transactions = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).order_by(Transaction.transaction_date.desc()
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_bank_account
+            ).join(Bank_account
+            ).limit(temp_limit
+            ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no bank accounts!")
@@ -68,10 +82,19 @@ class BankAccountAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account).filter_by(account_id=temp_account.account_id).join(Transaction).filter(Transaction.transaction_date<=temp_date).order_by(Transaction.transaction_date.desc()).order_by(Transaction.transaction_id.desc()).join(Transaction_bank_account).join(Bank_account).limit(temp_limit).all()
+        transactions = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).filter(Transaction.transaction_date<=temp_date
+            ).order_by(Transaction.transaction_date.desc()
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_bank_account
+            ).join(Bank_account
+            ).limit(temp_limit
+            ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
-            raise Exception("This user has no bank accounts!")
+            raise Exception("This user has no transactions on this account!")
         #Return the list
         return transactions
 
@@ -83,7 +106,12 @@ class BankAccountAccessor():
         except Exception as error: 
             raise Exception(error)
         #Query on the transaction where account_id = temo_account id, sum on the transaction value where the transaction id <= temp_transaction_id and date <= Date
-        query = db.session.query(func.sum(Transaction.transaction_value).label('balance')).filter_by(account_id=temp_account.account_id).filter(Transaction.transaction_id<=temp_transaction.transaction_id).filter(Transaction.transaction_date<=temp_date).first()
+        query = db.session.query(func.sum(Transaction.transaction_value
+            ).label('balance')
+            ).filter_by(account_id=temp_account.account_id
+            ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
+            ).filter(Transaction.transaction_date<=temp_date
+            ).first()
         #Return the int for the balance
         return int(query.balance)
 
@@ -95,17 +123,32 @@ class BankAccountAccessor():
         except Exception as error: 
             raise Exception(error)
         #Find a prior transaction on this account, joining on transaction_ba.
-        query = db.session.query(Account, Transaction, Transaction_bank_account).filter_by(account_id=temp_account.account_id).join(Transaction).join(Transaction_bank_account).first()
-        #Get the Bank Account id from the Transaction BA
-        bank_id = query.Transaction_bank_account.bank_account_id
+        try:
+            query = db.session.query(Account, Transaction, Transaction_bank_account
+                ).filter_by(account_id=temp_account.account_id
+                ).join(Transaction
+                ).join(Transaction_bank_account
+                ).first()
+            #Get the Bank Account id from the Transaction BA
+            bank_id = query.Transaction_bank_account.bank_account_id
+        except Exception:
+            raise Exception("There are no prior transactions! This account should not exist!")
         #Make a new transaction with the input information
         try:
-            new_transaction = Transaction(account_id=temp_account.account_id, transaction_type=temp_type, transaction_value=temp_value, transaction_date=temp_date, transaction_note=note)
+            new_transaction = Transaction(account_id=temp_account.account_id, 
+                transaction_type=temp_type, 
+                transaction_value=temp_value, 
+                transaction_date=temp_date, 
+                transaction_note=note)
             db.session.add(new_transaction)
             db.session.commit()
         except Exception as error:
             raise Exception("Could not create transaction! " + str(error))
-        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id).filter_by(transaction_type=temp_type).filter_by(transaction_value=temp_value).filter_by(transaction_date=temp_date).first()
+        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id
+            ).filter_by(transaction_type=temp_type
+            ).filter_by(transaction_value=temp_value
+            ).filter_by(transaction_date=temp_date
+            ).first()
         if new_transaction is None:
             raise Exception("Error making new transaction!")
         #Make a new Transaction BA with the bank account id
@@ -120,15 +163,23 @@ class BankAccountAccessor():
             new_account = Account(user_id=temp_user.user_id, account_name=temp_name, account_type='BANK_ACCOUNT')
             db.session.add(new_account)
             db.session.commit()
-            new_account = Account.query.filter_by(user_id=temp_user.user_id).filter_by(account_name=temp_name).filter_by(account_type='BANK_ACCOUNT').first()
+            new_account = Account.query.filter_by(user_id=temp_user.user_id
+                ).filter_by(account_name=temp_name
+                ).filter_by(account_type='BANK_ACCOUNT'
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! " + str(error))
         #make a first transaction with same values referencing the account id
         try:
-            new_transaction = Transaction(account_id=new_account.account_id, transaction_type='DEPOSIT', transaction_value=temp_value, transaction_note="Opening account")
+            new_transaction = Transaction(account_id=new_account.account_id, 
+                transaction_type='DEPOSIT', 
+                transaction_value=temp_value, 
+                transaction_note="Opening account")
             db.session.add(new_transaction)
             db.session.commit()
-            new_transaction = Transaction.query.filter_by(account_id=new_account.account_id).filter_by(transaction_type='DEPOSIT').first()
+            new_transaction = Transaction.query.filter_by(account_id=new_account.account_id
+                ).filter_by(transaction_type='DEPOSIT'
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making first transaction! "+str(error))
         #make a bank account with the proper values
@@ -136,7 +187,9 @@ class BankAccountAccessor():
             new_bank_account = Bank_account(bank_name=temp_bank_name, account_digits=temp_digits)
             db.session.add(new_bank_account)
             db.session.commit()
-            new_bank_account = Bank_account.query.filter_by(bank_name=temp_bank_name).filter_by(account_digits=temp_digits).first()
+            new_bank_account = Bank_account.query.filter_by(bank_name=temp_bank_name
+                ).filter_by(account_digits=temp_digits
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making bank account! "+str(error))
         #make a transaction ba with the transaction id
@@ -236,7 +289,12 @@ class BondAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_bond, Bond).filter_by(account_id=temp_account.account_id).join(Transaction).order_by(Transaction.transaction_id.desc()).join(Transaction_bond).join(Bond).all()
+        transactions = db.session.query(Account, Transaction, Transaction_bond, Bond
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_bond
+            ).join(Bond).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no transactions!")
@@ -250,7 +308,12 @@ class BondAccessor():
         except Exception as error: 
             raise Exception(error)
         #Query on the transaction where account_id = temo_account id, sum on the transaction value where the transaction id <= temp_transaction_id and date <= Date
-        query = db.session.query(func.sum(Transaction.transaction_value).label('balance')).filter_by(account_id=temp_account.account_id).filter(Transaction.transaction_id<=temp_transaction.transaction_id).filter(Transaction.transaction_date<=temp_date).first()
+        query = db.session.query(func.sum(Transaction.transaction_value
+            ).label('balance')
+            ).filter_by(account_id=temp_account.account_id
+            ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
+            ).filter(Transaction.transaction_date<=temp_date
+            ).first()
         #Return the int for the balance
         return int(query.balance)
 
@@ -261,7 +324,10 @@ class BondAccessor():
             new_account = Account(user_id=temp_user.user_id, account_name=temp_name, account_type='BOND')
             db.session.add(new_account)
             db.session.commit()
-            new_account = Account.query.filter_by(user_id=temp_user.user_id).filter_by(account_name=temp_name).filter_by(account_type='BOND').first()
+            new_account = Account.query.filter_by(user_id=temp_user.user_id
+                ).filter_by(account_name=temp_name
+                ).filter_by(account_type='BOND'
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! " + str(error))
         #make a first transaction with same values referencing the account id
@@ -313,7 +379,12 @@ class BondAccessor():
         except Exception as error: 
             raise Exception(error)
         #Find a prior transaction on this account, joining on transaction_bo.
-        query = db.session.query(Account, Transaction, Transaction_bond, Bond).filter_by(account_id=temp_account.account_id).join(Transaction).join(Transaction_bond).join(Bond).first()
+        query = db.session.query(Account, Transaction, Transaction_bond, Bond
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).join(Transaction_bond
+            ).join(Bond
+            ).first()
         temp_value = -1*query.Bond.value
         if(temp_value == 0):
             raise Exception("This bond has already been spent!")
@@ -323,12 +394,20 @@ class BondAccessor():
         bond_id = query.Transaction_bond.bond_id
         #Make a new transaction with the input information
         try:
-            new_transaction = Transaction(account_id=temp_account.account_id, transaction_type=temp_type, transaction_value=temp_value, transaction_date=temp_date, transaction_note=note)
+            new_transaction = Transaction(account_id=temp_account.account_id, 
+                transaction_type=temp_type, 
+                transaction_value=temp_value, 
+                transaction_date=temp_date, 
+                transaction_note=note)
             db.session.add(new_transaction)
             db.session.commit()
         except Exception as error:
             raise Exception("Could not create transaction! " + str(error))
-        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id).filter_by(transaction_type=temp_type).filter_by(transaction_value=temp_value).filter_by(transaction_date=temp_date).first()
+        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id
+            ).filter_by(transaction_type=temp_type
+            ).filter_by(transaction_value=temp_value
+            ).filter_by(transaction_date=temp_date
+            ).first()
         if new_transaction is None:
             raise Exception("Error making new transaction!")
         query.Bond.value = 0
@@ -351,7 +430,12 @@ class BondAccessor():
         #And that the value for the destination is positive, since money is being added
         try:
             #Make a transfer transaction on the source account
-            query = db.session.query(Account, Transaction, Transaction_bond, Bond).filter_by(account_id=source_account.account_id).join(Transaction).join(Transaction_bond).join(Bond).first()
+            query = db.session.query(Account, Transaction, Transaction_bond, Bond
+                ).filter_by(account_id=source_account.account_id
+                ).join(Transaction
+                ).join(Transaction_bond
+                ).join(Bond
+                ).first()
             temp_value = query.Bond.value
             self.makeTransaction(temp_user, source_account, "TRANSFER", temp_note, temp_date=temp_date)
             #Make a transfer transaction on the destination account
@@ -391,7 +475,13 @@ class DebtAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_debt, Debt).filter_by(account_id=temp_account.account_id).join(Transaction).order_by(Transaction.transaction_id.desc()).join(Transaction_debt).join(Debt).all()
+        transactions = db.session.query(Account, Transaction, Transaction_debt, Debt
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_debt
+            ).join(Debt
+            ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no transactions!")
@@ -406,7 +496,15 @@ class DebtAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_debt, Debt).filter_by(account_id=temp_account.account_id).join(Transaction).order_by(Transaction.transaction_date.desc()).order_by(Transaction.transaction_id.desc()).join(Transaction_debt).join(Debt).limit(temp_limit).all()
+        transactions = db.session.query(Account, Transaction, Transaction_debt, Debt
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).order_by(Transaction.transaction_date.desc()
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_debt
+            ).join(Debt
+            ).limit(temp_limit
+            ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no debt!")
@@ -420,7 +518,16 @@ class DebtAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_debt, Debt).filter_by(account_id=temp_account.account_id).join(Transaction).filter(Transaction.transaction_date<=temp_date).order_by(Transaction.transaction_date.desc()).order_by(Transaction.transaction_id.desc()).join(Transaction_debt).join(Debt).limit(temp_limit).all()
+        transactions = db.session.query(Account, Transaction, Transaction_debt, Debt
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).filter(Transaction.transaction_date<=temp_date
+            ).order_by(Transaction.transaction_date.desc()
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_debt
+            ).join(Debt
+            ).limit(temp_limit
+            ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no debt!")
@@ -435,7 +542,12 @@ class DebtAccessor():
         except Exception as error: 
             raise Exception(error)
         #Query on the transaction where account_id = temo_account id, sum on the transaction value where the transaction id <= temp_transaction_id and date <= Date
-        query = db.session.query(func.sum(Transaction.transaction_value).label('balance')).filter_by(account_id=temp_account.account_id).filter(Transaction.transaction_id<=temp_transaction.transaction_id).filter(Transaction.transaction_date<=temp_date).first()
+        query = db.session.query(func.sum(Transaction.transaction_value
+            ).label('balance')
+            ).filter_by(account_id=temp_account.account_id
+            ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
+            ).filter(Transaction.transaction_date<=temp_date
+            ).first()
         #Return the int for the balance
         return int(query.balance)
 
@@ -452,12 +564,20 @@ class DebtAccessor():
         debt_id = query.Transaction_debt.debt_id
         #Make a new transaction with the input information
         try:
-            new_transaction = Transaction(account_id=temp_account.account_id, transaction_type=temp_type, transaction_value=temp_value, transaction_date=temp_date, transaction_note=note)
+            new_transaction = Transaction(account_id=temp_account.account_id, 
+                transaction_type=temp_type, 
+                transaction_value=temp_value, 
+                transaction_date=temp_date, 
+                transaction_note=note)
             db.session.add(new_transaction)
             db.session.commit()
         except Exception as error:
             raise Exception("Could not create transaction! " + str(error))
-        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id).filter_by(transaction_type=temp_type).filter_by(transaction_value=temp_value).filter_by(transaction_date=temp_date).first()
+        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id
+            ).filter_by(transaction_type=temp_type
+            ).filter_by(transaction_value=temp_value
+            ).filter_by(transaction_date=temp_date
+            ).first()
         if new_transaction is None:
             raise Exception("Error making new transaction!")
         #Make a new Transaction BA with the bank account id
@@ -474,15 +594,23 @@ class DebtAccessor():
             new_account = Account(user_id=temp_user.user_id, account_name=temp_name, account_type='DEBT')
             db.session.add(new_account)
             db.session.commit()
-            new_account = Account.query.filter_by(user_id=temp_user.user_id).filter_by(account_name=temp_name).filter_by(account_type='DEBT').first()
+            new_account = Account.query.filter_by(user_id=temp_user.user_id
+                ).filter_by(account_name=temp_name
+                ).filter_by(account_type='DEBT'
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! " + str(error))
         #make a first transaction with same values referencing the account id
         try:
-            new_transaction = Transaction(account_id=new_account.account_id, transaction_type='WITHDRAWAL', transaction_value=temp_value, transaction_note="Opening account")
+            new_transaction = Transaction(account_id=new_account.account_id, 
+                transaction_type='WITHDRAWAL', 
+                transaction_value=temp_value, 
+                transaction_note="Opening account")
             db.session.add(new_transaction)
             db.session.commit()
-            new_transaction = Transaction.query.filter_by(account_id=new_account.account_id).filter_by(transaction_type='WITHDRAWAL').first()
+            new_transaction = Transaction.query.filter_by(account_id=new_account.account_id
+                ).filter_by(transaction_type='WITHDRAWAL'
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making first transaction! "+str(error))
         #make a bank account with the proper values
@@ -490,7 +618,9 @@ class DebtAccessor():
             new_debt = Debt(lender=temp_lender, principal=temp_value, payment_account=temp_account.account_id,payment_date=temp_date)
             db.session.add(new_debt)
             db.session.commit()
-            new_debt = Debt.query.filter_by(lender=temp_lender).filter_by(payment_date=temp_date).first()
+            new_debt = Debt.query.filter_by(lender=temp_lender
+                ).filter_by(payment_date=temp_date
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making debt! "+str(error))
         #make a transaction ba with the transaction id
@@ -612,7 +742,12 @@ class RealEstateAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_real_estate, Real_estate).filter_by(account_id=temp_account.account_id).join(Transaction).order_by(Transaction.transaction_id.desc()).join(Transaction_real_estate).join(Real_estate).all()
+        transactions = db.session.query(Account, Transaction, Transaction_real_estate, Real_estate
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_real_estate
+            ).join(Real_estate).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no transactions!")
@@ -627,7 +762,15 @@ class RealEstateAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_real_estate, Real_estate).filter_by(account_id=temp_account.account_id).join(Transaction).order_by(Transaction.transaction_date.desc()).order_by(Transaction.transaction_id.desc()).join(Transaction_real_estate).join(Real_estate).limit(temp_limit).all()
+        transactions = db.session.query(Account, Transaction, Transaction_real_estate, Real_estate
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).order_by(Transaction.transaction_date.desc()
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_real_estate
+            ).join(Real_estate
+            ).limit(temp_limit
+            ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no real estate!")
@@ -641,7 +784,16 @@ class RealEstateAccessor():
         except Exception as error: 
             raise Exception(error)
         #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
-        transactions = db.session.query(Account, Transaction, Transaction_real_estate, Real_estate).filter_by(account_id=temp_account.account_id).join(Transaction).filter(Transaction.transaction_date<=temp_date).order_by(Transaction.transaction_date.desc()).order_by(Transaction.transaction_id.desc()).join(Transaction_real_estate).join(Real_estate).limit(temp_limit).all()
+        transactions = db.session.query(Account, Transaction, Transaction_real_estate, Real_estate
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).filter(Transaction.transaction_date<=temp_date
+            ).order_by(Transaction.transaction_date.desc()
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_real_estate
+            ).join(Real_estate
+            ).limit(temp_limit
+            ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
             raise Exception("This user has no real estate!")
@@ -656,7 +808,12 @@ class RealEstateAccessor():
         except Exception as error: 
             raise Exception(error)
         #Query on the transaction where account_id = temo_account id, sum on the transaction value where the transaction id <= temp_transaction_id and date <= Date
-        query = db.session.query(func.sum(Transaction.transaction_value).label('balance')).filter_by(account_id=temp_account.account_id).filter(Transaction.transaction_id<=temp_transaction.transaction_id).filter(Transaction.transaction_date<=temp_date).first()
+        query = db.session.query(func.sum(Transaction.transaction_value
+            ).label('balance')
+            ).filter_by(account_id=temp_account.account_id
+            ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
+            ).filter(Transaction.transaction_date<=temp_date
+            ).first()
         #Return the int for the balance
         return int(query.balance)
 
@@ -668,17 +825,29 @@ class RealEstateAccessor():
         except Exception as error: 
             raise Exception(error)
         #Find a prior transaction on this account, joining on transaction_ba.
-        query = db.session.query(Account, Transaction, Transaction_real_estate).filter_by(account_id=temp_account.account_id).join(Transaction).join(Transaction_real_estate).first()
+        query = db.session.query(Account, Transaction, Transaction_real_estate
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).join(Transaction_real_estate
+            ).first()
         #Get the Bank Account id from the Transaction BA
         real_estate_id = query.Transaction_real_estate.real_estate_id
         #Make a new transaction with the input information
         try:
-            new_transaction = Transaction(account_id=temp_account.account_id, transaction_type=temp_type, transaction_value=temp_value, transaction_date=temp_date, transaction_note=note)
+            new_transaction = Transaction(account_id=temp_account.account_id, 
+                transaction_type=temp_type, 
+                transaction_value=temp_value, 
+                transaction_date=temp_date, 
+                transaction_note=note)
             db.session.add(new_transaction)
             db.session.commit()
         except Exception as error:
             raise Exception("Could not create transaction! " + str(error))
-        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id).filter_by(transaction_type=temp_type).filter_by(transaction_value=temp_value).filter_by(transaction_date=temp_date).first()
+        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id
+            ).filter_by(transaction_type=temp_type
+            ).filter_by(transaction_value=temp_value
+            ).filter_by(transaction_date=temp_date
+            ).first()
         if new_transaction is None:
             raise Exception("Error making new transaction!")
         #Make a new Transaction BA with the bank account id
@@ -693,15 +862,23 @@ class RealEstateAccessor():
             new_account = Account(user_id=temp_user.user_id, account_name=temp_name, account_type='REAL_ESTATE')
             db.session.add(new_account)
             db.session.commit()
-            new_account = Account.query.filter_by(user_id=temp_user.user_id).filter_by(account_name=temp_name).filter_by(account_type='REAL_ESTATE').first()
+            new_account = Account.query.filter_by(user_id=temp_user.user_id
+                ).filter_by(account_name=temp_name
+                ).filter_by(account_type='REAL_ESTATE'
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! " + str(error))
         #make a first transaction with same values referencing the account id
         try:
-            new_transaction = Transaction(account_id=new_account.account_id, transaction_type='DEPOSIT', transaction_value=temp_estimate, transaction_note="Opening account")
+            new_transaction = Transaction(account_id=new_account.account_id, 
+                transaction_type='DEPOSIT', 
+                transaction_value=temp_estimate, 
+                transaction_note="Opening account")
             db.session.add(new_transaction)
             db.session.commit()
-            new_transaction = Transaction.query.filter_by(account_id=new_account.account_id).filter_by(transaction_type='DEPOSIT').first()
+            new_transaction = Transaction.query.filter_by(account_id=new_account.account_id
+                ).filter_by(transaction_type='DEPOSIT'
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making first transaction! "+str(error))
         #make a bank account with the proper values
@@ -709,7 +886,9 @@ class RealEstateAccessor():
             new_real_estate = Real_estate(name=temp_name, original_value=temp_original, estimated_value=temp_estimate)
             db.session.add(new_real_estate)
             db.session.commit()
-            new_real_estate = Real_estate.query.filter_by(name=temp_name).filter_by(original_value=temp_original).first()
+            new_real_estate = Real_estate.query.filter_by(name=temp_name
+                ).filter_by(original_value=temp_original
+                ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making real estate! "+str(error))
         #make a transaction ba with the transaction id
@@ -849,6 +1028,33 @@ def DebtTest():
     t1 = da.getTransactions(u,a2,1)
     print(t1[0].Transaction)
     print(da.getBalance(u,a2,t1[0].Transaction))
+    debt = {}
+    debt_accounts = da.getUserAccounts(u)
+    for account in debt_accounts:
+        debt_trans = da.getTransactionsOnDate(u, account, 10, date.today())
+        ex_trans = debt_trans[0]
+        debt_name = ex_trans.Debt.lender
+        debt_balance = da.getBalance(u, account, ex_trans.Transaction)
+        pay_date = ex_trans.Debt.payment_date
+        pay_account = ex_trans.Debt.payment_account
+        pay_account = Account.query.filter_by(user_id=u.user_id).filter_by(account_id = pay_account).first()
+        if pay_account is None:
+            pay_account_name = "Autopay is off, no account"
+        else:
+            pay_account_name = pay_account.account_name
+        if pay_date is None:
+            pay_date = "Autopay is off, "
+            pay_account_name = "Autopay is off, no account"
+        temp = {
+            'principal' : ex_trans.Debt.principal,
+            'interest' : ex_trans.Debt.interest_rate,
+            'period' : ex_trans.Debt.interest_period,
+        'payment date' : pay_date,
+        'account associated' : pay_account_name,
+        'balance' : debt_balance,
+        }
+        debt[debt_name] = temp
+        print(debt)
 
 def REATest():
     raa = RealEstateAccessor()
@@ -879,3 +1085,15 @@ def REATest():
         print(trans.Transaction)
         print(raa.getBalance(u,a2,trans.Transaction))
     #makeTransfer(self,temp_user, source_account, dest_account, temp_value, temp_note, temp_date=date.today()):
+    realestate = {}
+    re_accounts = raa.getUserAccounts(u)
+    for account in re_accounts:
+        re_trans = raa.getTransactionsOnDate(u, account, 1, date.today())
+        re_name = account.account_name
+        trans = re_trans[0]
+        temp = {
+            'original value' : trans.Real_estate.original_value,
+            'estimated value' : trans.Real_estate.estimated_value
+        }
+        realestate[re_name] = temp
+    print(realestate)

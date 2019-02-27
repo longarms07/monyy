@@ -33,11 +33,7 @@ def hello():
     #BAATest()
     #BondTest()
     #DebtTest()
-    REATest()
-    #if current_user.is_authenticated:
-    #    return "Hello "+current_user.get_username()+"!"
-    #else:
-    #    return "Hello mlemlem!"
+    #REATest()
     if current_user.is_authenticated:
         return redirect("/index")
     else:
@@ -93,6 +89,8 @@ def index():
     debts = {}
     baa = BankAccountAccessor()
     ba = BondAccessor()
+    da = DebtAccessor()
+    rea = RealEstateAccessor()
     try:
         #Bank Accounts
         bank_accounts = baa.getUserAccounts(current_user)
@@ -102,7 +100,7 @@ def index():
             trans_list = baa.getTransactionsOnDate(current_user, account,10, date.today())
             #trans_list = baa.getAllTransactions(current_user, bank_accounts[count])
             ex_trans = trans_list[0]
-            bank_name = str(ex_trans.Bank_account.bank_name)+" (..."+str(ex_trans.Bank_account.account_digits)+")"
+            bank_name = str(ex_trans.Bank_account.bank_name)+" "+account.account_name+" (..."+str(ex_trans.Bank_account.account_digits)+")"
             count = 0
             for trans in trans_list:
                 temp_balance = baa.getBalance(current_user, account, trans.Transaction)
@@ -122,7 +120,6 @@ def index():
         #Bonds
         bond_accounts = ba.getUserAccounts(current_user)
         for account in bond_accounts:
-            transactions={}
             bond_transactions = ba.getAllTransactions(current_user, account)
             ex_trans = bond_transactions[0]
             bond_name = ex_trans.Bond.name 
@@ -131,20 +128,51 @@ def index():
                 'amount' : ex_trans.Bond.value,
             }
             bonds[bond_name] = temp
-        print(bonds)
+        #print(bonds)
         bonds = json.dumps(bonds)
+        #Real Estate
+        re_accounts = rea.getUserAccounts(current_user)
+        for account in re_accounts:
+            re_trans = rea.getTransactionsOnDate(current_user, account, 1, date.today())
+            re_name = account.account_name
+            trans = re_trans[0]
+            temp = {
+                'original value' : trans.Real_estate.original_value,
+                'estimated value' : trans.Real_estate.estimated_value
+            }
+            realestate[re_name] = temp
+        realestate = json.dumps(realestate)
+        #debts
+        debt_accounts = da.getUserAccounts(current_user)
+        for account in debt_accounts:
+            debt_trans = da.getTransactionsOnDate(current_user, account, 10, date.today())
+            ex_trans = debt_trans[0]
+            debt_name = ex_trans.Debt.lender
+            debt_balance = da.getBalance(current_user, account, ex_trans.Transaction)
+            pay_date = ex_trans.Debt.payment_date
+            pay_account = ex_trans.Debt.payment_account
+            pay_account = Account.query.filter_by(user_id=current_user.user_id).filter_by(account_id = pay_account).first()
+            if pay_account is None:
+                pay_account_name = "Autopay is off, no account"
+            else:
+                pay_account_name = pay_account.account_name
+            if pay_date is None:
+                pay_date = "Autopay is off, "
+                pay_account_name = "Autopay is off, no account"
+            temp = {
+                'principal' : ex_trans.Debt.principal,
+                'interest' : ex_trans.Debt.interest_rate,
+                'period' : ex_trans.Debt.interest_period,
+                'payment date' : pay_date,
+                'account associated' : pay_account_name,
+                'balance' : debt_balance,
+            }
+            debt[debt_name] = temp
+        debt = json.dumps(debt)
 
+        
     except Exception as error:
         print(error)
-
-
-
-
-
-
-
-
-
 
 
 
