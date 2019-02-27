@@ -79,7 +79,7 @@ def logout():
     return redirect("/login")
 
 
-@app.route("/index")
+@app.route("/index", methods=['GET', 'POST'])
 @login_required
 def index():
     cash = {}
@@ -170,11 +170,16 @@ def index():
             debt[debt_name] = temp
         debt = json.dumps(debt)
 
-        
+
     except Exception as error:
         print(error)
 
 
 
     return render_template('index.html')
+
+    @app.route("index/post", methods=['POST'])
+    @login_required
+    def addValues():
+        
 

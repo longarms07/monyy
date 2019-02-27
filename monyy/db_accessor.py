@@ -920,6 +920,94 @@ class RealEstateAccessor():
         temp_real_estate.name = temp_name
         db.session.commit() 
 
+class TagAccessor():
+
+    def getTransactionTags(self, temp_transaction):
+        query = db.session.query(Transaction, Transaction_tag, Tag
+            ).filter_by(transaction_id = temp_transaction.transaction_id
+            ).join(Transaction_tag
+            ).join(Tag
+            ).all()
+        if len(query) == 0:
+            raise Exception('Transaction has no tags!')
+        return query
+
+    def getTransactionTag(self, temp_transaction, tag_name):
+        query = db.session.query(Transaction, Transaction_tag, Tag
+            ).filter_by(transaction_id = temp_transaction.transaction_id
+            ).join(Transaction_tag
+            ).join(Tag
+            ).all()
+        if len(query) == 0:
+            raise Exception('Transaction does not have this tag!')
+        return query
+
+    def makeTransactionTag(self, temp_transaction, temp_tag_name):
+        #see if tag is already in tag table. If not add it
+        tag_check = Tag.query().filter_by(tag_name = temp_tag_name).first()
+        t_tag_exists = True
+        if tag_check is None:
+            tag_check = Tag(tag_name = temp_tag_name)
+            db.session.add(tag_check)
+            db.session.commit()
+            tag_check = Tag.query().filter_by(tag_name = temp_tag_name).first()
+        #check to see if this transaction already has this tag   
+        else:
+            try:
+                t_tag = self.getTransactionTag(temp_transaction, temp_tag_name)
+                t_tag_exists = True
+            except:
+                t_tag_exists = False
+        #If this tag isn't already attatched, add the transaction tag
+        if not tag_exists:
+            new_t_tag = Transaction_tag(transaction_id = temp_transaction_id, tag_id = tag_check.tag_id)
+            db.session.add(new_t_tag)
+            db.session.commit()
+
+    def getAccountTags(self, temp_account):
+        query = db.session.query(Account, Account_tag, Tag
+            ).filter_by(account_id = temp_account.account_id
+            ).join(Account_tag
+            ).join(Tag
+            ).all()
+        if len(query) == 0:
+            raise Exception('Account has no tags!')
+        return query
+
+    def getAccountTag(self, temp_account, tag_name):
+        query = db.session.query(Account, Account_tag, Tag
+            ).filter_by(account_id = temp_account.account_id
+            ).join(Account_tag
+            ).join(Tag
+            ).all()
+        if len(query) == 0:
+            raise Exception('Account does not have this tag!')
+        return query
+
+    def makeTransactionTag(self, temp_account, temp_tag_name):
+        #see if tag is already in tag table. If not add it
+        tag_check = Tag.query().filter_by(tag_name = temp_tag_name).first()
+        a_tag_exists = True
+        if tag_check is None:
+            tag_check = Tag(tag_name = temp_tag_name)
+            db.session.add(tag_check)
+            db.session.commit()
+            tag_check = Tag.query().filter_by(tag_name = temp_tag_name).first()
+        #check to see if this transaction already has this tag
+        else:
+            try:
+                a_tag = self.getTransactionTag(temp_account, temp_tag_name)
+                a_tag_exists = True
+            except:
+                a_tag_exists = False
+        #If this tag isn't already attatched, add the transaction tag
+        if not tag_exists:
+            new_a_tag = Transaction_tag(transaction_id = temp_account_id, tag_id = tag_check.tag_id)
+            db.session.add(new_t_tag)
+            db.session.commit()
+
+
+
 
 def BAATest():
     baa = BankAccountAccessor()
@@ -1097,3 +1185,4 @@ def REATest():
         }
         realestate[re_name] = temp
     print(realestate)
+
