@@ -314,7 +314,7 @@ class BondAccessor():
             raise Exception(error)
         #Find a prior transaction on this account, joining on transaction_bo.
         query = db.session.query(Account, Transaction, Transaction_bond, Bond).filter_by(account_id=temp_account.account_id).join(Transaction).join(Transaction_bond).join(Bond).first()
-        temp_value = query.Bond.value
+        temp_value = -1*query.Bond.value
         if(temp_value == 0):
             raise Exception("This bond has already been spent!")
         if temp_date < query.Bond.maturation_date:
@@ -439,4 +439,4 @@ def BondTest():
     t = ba.getAllTransactions(u, a1)
     print(t)
     print(t[0].Bond.value)
-    print(ba.getBalance(u, a1, t[0]))
+    print(ba.getBalance(u, a1, t[0].Transaction))
