@@ -25,25 +25,6 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
         cursor.execute("PRAGMA foreign_keys=ON;")
         cursor.close()
 
-#db.drop_all()
-#db.create_all()
-#db.session.query(Account).delete()
-#db.session.query(User).delete()
-#db.session.query(Transaction).delete()
-#db.session.query(Bank_account).delete()
-#db.session.query(Transaction_bank_account).delete()
-#db.session.query(Bond).delete()
-#db.session.query(Transaction_bond).delete()
-#db.session.query(Stock).delete()
-#db.session.query(Stock_value).delete()
-#db.session.query(Transaction_stock).delete()
-#db.session.query(Debt).delete()
-#db.session.query(Transaction_debt).delete()
-#db.session.query(Real_estate).delete()
-#db.session.query(Transaction_real_estate).delete()
-#db.session.query(Transaction_tag).delete()
-#db.session.query(Tag).delete()
-#db.session.query(Account_tag).delete()
-#db.session.commit()
+
 
 from . import main

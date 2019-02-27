@@ -217,7 +217,7 @@ class BondAccessor():
         accounts = Account.query.filter_by(user_id=id).filter_by(account_type='BOND').all()
         #Raise an exception if they have none
         if len(accounts) == 0:
-            raise Exception("This user has no bank accounts!")
+            raise Exception("This user has no bond accounts!")
         #Return that list
         return accounts
 
@@ -254,8 +254,9 @@ class BondAccessor():
         #Return the int for the balance
         return int(query.balance)
 
-    def makeAccount(self,temp_user, temp_name, temp_value, temp_name, temp_digits, temp_date):
+    def makeAccount(self,temp_user, temp_name, temp_value, temp_date):
         #make an account with the given values
+        abs(temp_value)
         try:
             new_account = Account(user_id=temp_user.user_id, account_name=temp_name, account_type='BOND')
             db.session.add(new_account)
@@ -278,14 +279,14 @@ class BondAccessor():
             db.session.commit()
             new_bank_account = Bond.query.filter_by(name=temp_name).filter_by(maturation_date=temp_date).first()
         except Exception as error:
-            raise Exception("Could not create account! Error making bank account! "+str(error))
+            raise Exception("Could not create account! Error making bond account! "+str(error))
         #make a transaction ba with the transaction id
         try:
-            new_transaction_bond= Transaction_bond(transaction_id=new_transaction.transaction_id, bank_account_id=new_bond.bond_id)
+            new_transaction_bond= Transaction_bond(transaction_id=new_transaction.transaction_id, bond_id=new_bond.bond_id)
             db.session.add(new_transaction_bond)
             db.session.commit()
         except Exception as error:
-            raise Exception("Could not create account! Error making transaction_ba! "+str(error))
+            raise Exception("Could not create account! Error making transaction_bond! "+str(error))
 
     def editMaturationDate(self,temp_bond_id, temp_date):
         #Get the account
@@ -304,13 +305,44 @@ class BondAccessor():
         temp_bond.name = temp_name
         db.session.commit()
 
-    def makeWithdrawal(self,temp_user, temp_account, temp_value, temp_note, temp_date=date.today()):
+    #Make a new transaction
+    def makeTransaction(self,temp_user, temp_account, temp_type, note, temp_date=date.today()):
+        #check that the account belongs to the user
+        try:
+            self.ownershipCheck(temp_user, temp_account)
+        except Exception as error: 
+            raise Exception(error)
+        #Find a prior transaction on this account, joining on transaction_bo.
+        query = db.session.query(Account, Transaction, Transaction_bond, Bond).filter_by(account_id=temp_account.account_id).join(Transaction).join(Transaction_bond).join(Bond).first()
+        temp_value = query.Bond.value
+        if(temp_value == 0):
+            raise Exception("This bond has already been spent!")
+        if temp_date < query.Bond.maturation_date:
+            raise Exception("This bond has not yet matured!")
+        #Get the Bank Account id from the Transaction BA
+        bond_id = query.Transaction_bond.bond_id
+        #Make a new transaction with the input information
+        try:
+            new_transaction = Transaction(account_id=temp_account.account_id, transaction_type=temp_type, transaction_value=temp_value, transaction_date=temp_date, transaction_note=note)
+            db.session.add(new_transaction)
+            db.session.commit()
+        except Exception as error:
+            raise Exception("Could not create transaction! " + str(error))
+        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id).filter_by(transaction_type=temp_type).filter_by(transaction_value=temp_value).filter_by(transaction_date=temp_date).first()
+        if new_transaction is None:
+            raise Exception("Error making new transaction!")
+        query.Bond.value = 0
+        db.session.commit()
+        #Make a new Transaction BA with the bank account id
+        new_transaction_bond= Transaction_bond(transaction_id=new_transaction.transaction_id, bond_id=bond_id)
+        db.session.add(new_transaction_bond)
+        db.session.commit()
+
+    def makeWithdrawal(self,temp_user, temp_account, temp_note, temp_date=date.today()):
         #Make sure the value is negative, since we are removing money
-        if temp_value > 0:
-            temp_value = (-1*temp_value)
         try:
             #Make a transaction of type withdrawal
-            self.makeTransaction(temp_user, temp_account, "WITHDRAWAL", temp_value, temp_note, temp_date=temp_date)
+            self.makeTransaction(temp_user, temp_account, "WITHDRAWAL", temp_note, temp_date=temp_date)
         except Exception as error:
             raise Exception(error)
 
@@ -332,13 +364,13 @@ class BondAccessor():
             raise Exception(error)
 
 
-class StockAccessor():
+#class StockAccessor():
 
 
-class DebtAccessor():
+#class DebtAccessor():
 
 
-class RealEstateAccessor():
+#class RealEstateAccessor():
 
 
 
@@ -352,7 +384,7 @@ def BAATest():
     baa.makeAccount(u, 'test two', 5, 'BB&T', 3335)
     baa.makeAccount(u, 'test three', 180000000, 'Wells Fargo', 5556)
     accounts = baa.getUserAccounts(u)
-    assert(len(accounts)==3)
+    #assert(len(accounts)==3)
     a1 = accounts[0]
     a2 = accounts[1]
     a3 = accounts[2]
@@ -379,4 +411,32 @@ def BAATest():
     print(t2[0].Transaction)
     print(baa.getBalance(u,a2,t2[0].Transaction))
 
-
+def BondTest():
+    ba = BondAccessor()
+    u = User(user_name='nfdjgbkdfjgkjbtfrkeg', pass_hash = 'bfdjbvkjdbgvkjbdfkjgvbdfkjgvbkjf')
+    db.session.add(u)
+    db.session.commit()
+    #makeAccount(self,temp_user, temp_name, temp_value,  temp_date)
+    ba.makeAccount(u, 'test_one', 5000, date.today())
+    ba.makeAccount(u, 'test_two', 605, date.today())
+    ba.makeAccount(u, 'test_three', 89, date.today())
+    accounts = ba.getUserAccounts(u)
+    #assert(len(accounts)==3)
+    a1 = accounts[0]
+    a2 = accounts[1]
+    a3 = accounts[2]
+    t = ba.getAllTransactions(u, a1)
+    print(t[0])
+    #makeWithdrawal(self,temp_user, temp_account, temp_note, temp_date=date.today())
+    ba.makeWithdrawal(u, a1, 'Spending bond')
+    try:
+        ba.makeWithdrawal(u, a1, 'Spending bond')
+        t = ba.getAllTransactions(u, a1)
+        print(t)
+        print(t[0].Bond.value)
+    except Exception:
+        print("Couldn't take more money.")
+    t = ba.getAllTransactions(u, a1)
+    print(t)
+    print(t[0].Bond.value)
+    print(ba.getBalance(u, a1, t[0]))
