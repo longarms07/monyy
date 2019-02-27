@@ -31,7 +31,9 @@ def hello():
     db.session.query(Account_tag).delete()
     db.session.commit()
     #BAATest()
-    BondTest()
+    #BondTest()
+    #DebtTest()
+    REATest()
     #if current_user.is_authenticated:
     #    return "Hello "+current_user.get_username()+"!"
     #else:
