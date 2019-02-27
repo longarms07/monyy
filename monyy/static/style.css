@@ -9,6 +9,10 @@ h1, h2 {
     font-weight: normal;
 }
 
+a {
+    text-decoration: none;
+}
+
 
 /*
  * SIDEBAR NAVIGATION
@@ -25,7 +29,7 @@ h1, h2 {
     padding-top: 20px;
 }
 
-.sidenav a {
+.sidebar-section {
     background-color: #ebca66;
     padding: 6px 8px 6px 16px;
     text-decoration: none;
@@ -34,7 +38,7 @@ h1, h2 {
     display: block;
 }
 
-.sidenav a:hover {
+.sidebar-section:hover {
     background-color: #1d1e22;
     transition: 0.3s;
 }
