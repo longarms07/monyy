@@ -71,19 +71,19 @@ def hello():
         networth = 532789236
         cash = {
                     'acct1' : { 'ID0' : {
-                                            'name' : 'Walmart',
+                                            'name' : 'Walmart 1',
                                             'date' : '2/14/2019',
                                             'amount' : 54.21,
                                             'balance' : 3000.77
                                         },
                                 'ID1' : {
-                                            'name' : 'The nice men in NJ',
+                                            'name' : 'The nice men in NJ 1',
                                             'date' : '2/12/2019',
                                             'amount' : 2278.98,
                                             'balance' : 34307.98
                                         },
                                 'ID2' : {
-                                            'name' : 'Deposit',
+                                            'name' : 'Deposit 1',
                                             'date' : '2/06/2019',
                                             'amount' : 4000.00,
                                             'balance': 36586.96
@@ -91,57 +91,57 @@ def hello():
                     },
                                     
                     'acct2' : { 'ID0' : {
-                                            'name' : 'Walmart',
+                                            'name' : 'Walmart 2',
                                             'date' : '2/14/2019',
                                             'amount' : 54.21,
                                             'balance' : 5000.77
                                         },
                                 'ID1' : {
-                                            'name' : 'The nice men in NJ',
+                                            'name' : 'The nice men in NJ 2',
                                             'date' : '2/12/2019',
                                             'amount' : 2278.98,
                                             'balance' : 34307.98
                                         },
                                 'ID2' : {
-                                            'name' : 'Deposit',
+                                            'name' : 'Deposit 2',
                                             'date' : '2/06/2019',
                                             'amount' : 4000.00,
                                             'balance': 36586.96
                                 },
                     },
                     'acct3' : { 'ID0' : {
-                                            'name' : 'Walmart',
+                                            'name' : 'Walmart 3',
                                             'date' : '2/14/2019',
                                             'amount' : 54.21,
                                             'balance' : 34253.77
                                         },
                                 'ID1' : {
-                                            'name' : 'The nice men in NJ',
+                                            'name' : 'The nice men in NJ 3',
                                             'date' : '2/12/2019',
                                             'amount' : 2278.98,
                                             'balance' : 34307.98
                                         },
                                 'ID2' : {
-                                            'name' : 'Deposit',
+                                            'name' : 'Deposit 3',
                                             'date' : '2/06/2019',
                                             'amount' : 4000.00,
                                             'balance': 36586.96
                                 }
                     },
                     'acct4' : { 'ID0' : {
-                                            'name' : 'Walmart',
+                                            'name' : 'Walmart 4',
                                             'date' : '2/14/2019',
                                             'amount' : 54.21,
                                             'balance' : 34253.77
                                         },
                                 'ID1' : {
-                                            'name' : 'The nice men in NJ',
+                                            'name' : 'The nice men in NJ 4',
                                             'date' : '2/12/2019',
                                             'amount' : 2278.98,
                                             'balance' : 34307.98
                                         },
                                 'ID2' : {
-                                            'name' : 'Deposit',
+                                            'name' : 'Deposit 4',
                                             'date' : '2/06/2019',
                                             'amount' : 4000.00,
                                             'balance': 36586.96
