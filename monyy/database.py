@@ -15,7 +15,7 @@ from monyy import app, db
 #from monyy import app
 
 class User(UserMixin, db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Float, primary_key=True)
     user_name = db.Column(db.String(30), unique=True, nullable=False)
     pass_hash = db.Column(db.String(150), nullable=False)
     accounts = db.relationship('Account', backref=db.backref('User', uselist=False))
@@ -30,8 +30,8 @@ class User(UserMixin, db.Model):
         return '<User %r>' % self.user_name
 
 class Account(db.Model):
-    account_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.user_id), nullable=False)
+    account_id = db.Column(db.Float, primary_key=True)
+    user_id = db.Column(db.Float, db.ForeignKey(User.user_id), nullable=False)
     account_name = db.Column(db.String(80), nullable=False)
     account_type = db.Column(db.String(30), nullable=False)
     transactions = db.relationship('Transaction', backref=db.backref('Account', uselist=True))
@@ -41,10 +41,10 @@ class Account(db.Model):
         return '<Account %r>' % self.account_name
     
 class Transaction(db.Model):
-    transaction_id = db.Column(db.Integer, primary_key=True)
-    account_id = db.Column(db.Integer, db.ForeignKey(Account.account_id))
+    transaction_id = db.Column(db.Float, primary_key=True)
+    account_id = db.Column(db.Float, db.ForeignKey(Account.account_id))
     transaction_type = db.Column(db.String(30), nullable=False)
-    transaction_value = db.Column(db.Integer, nullable=False)
+    transaction_value = db.Column(db.Float, nullable=False)
     transaction_date = db.Column(db.Date, nullable=False, default=date.today())
     # transaction_time = db.Column(db.Time, nullable=False)
     transaction_note = db.Column(db.String(80))
@@ -59,93 +59,93 @@ class Transaction(db.Model):
     
 
 class Bank_account(db.Model):
-    bank_account_id = db.Column(db.Integer, primary_key=True)
+    bank_account_id = db.Column(db.Float, primary_key=True)
     bank_name = db.Column(db.String(80), nullable=False)
-    account_digits = db.Column(db.Integer, nullable=False)
-    interest_rate = db.Column(db.Integer, nullable=True)
+    account_digits = db.Column(db.Float, nullable=False)
+    interest_rate = db.Column(db.Float, nullable=True)
     interest_period = db.Column(db.String(30), nullable = True)
     transactions_ba = db.relationship('Transaction_bank_account', backref=db.backref('Bank_account', uselist=False))
     def __repr__(self):
         return '<Bank Account %r %r>' % (self.bank_name, self.account_digits)
 
 class Transaction_bank_account(db.Model):
-    transaction_ba_id =  db.Column(db.Integer, primary_key=True)
-    transaction_id = db.Column(db.Integer, db.ForeignKey(Transaction.transaction_id))
-    bank_account_id = db.Column(db.Integer, db.ForeignKey(Bank_account.bank_account_id))
+    transaction_ba_id =  db.Column(db.Float, primary_key=True)
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
+    bank_account_id = db.Column(db.Float, db.ForeignKey(Bank_account.bank_account_id))
 
 
 class Debt(db.Model):
-    debt_id = db.Column(db.Integer, primary_key=True)
+    debt_id = db.Column(db.Float, primary_key=True)
     lender = db.Column(db.String(80), nullable=False)
-    principal = db.Column(db.Integer, nullable=False)
-    interest_rate = db.Column(db.Integer, nullable=True)
+    principal = db.Column(db.Float, nullable=False)
+    interest_rate = db.Column(db.Float, nullable=True)
     interest_period = db.Column(db.String(30), nullable = True)
-    payment_account = db.Column(db.Integer, db.ForeignKey(Account.account_id))
+    payment_account = db.Column(db.Float, db.ForeignKey(Account.account_id))
     payment_date = db.Column(db.String(30), nullable=True)
     transactions_debt = db.relationship('Transaction_debt', backref=db.backref('Debt', uselist=False))
     def __repr__(self):
         return '<Debt %r>' % self.lender
 
 class Transaction_debt(db.Model):
-    transaction_debt_id = db.Column(db.Integer, primary_key=True)
-    transaction_id = db.Column(db.Integer, db.ForeignKey('transaction.transaction_id'))
-    debt_id = db.Column(db.Integer, db.ForeignKey('debt.debt_id'))
+    transaction_debt_id = db.Column(db.Float, primary_key=True)
+    transaction_id = db.Column(db.Float, db.ForeignKey('transaction.transaction_id'))
+    debt_id = db.Column(db.Float, db.ForeignKey('debt.debt_id'))
     
 
 class Real_estate(db.Model):
-    real_estate_id = db.Column(db.Integer, primary_key=True)
+    real_estate_id = db.Column(db.Float, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    original_value = db.Column(db.Integer, nullable=False)
-    estimated_value = db.Column(db.Integer, nullable=False)
+    original_value = db.Column(db.Float, nullable=False)
+    estimated_value = db.Column(db.Float, nullable=False)
     transactions_re = db.relationship('Transaction_real_estate', backref=db.backref('Real_estate', uselist=False))
     def __repr__(self):
         return '<Real Estate %r>' % self.name
 
 class Transaction_real_estate(db.Model):
-    transaction_re_id = db.Column(db.Integer, primary_key=True)
-    transaction_id = db.Column(db.Integer, db.ForeignKey(Transaction.transaction_id))
-    real_estate_id = db.Column(db.Integer, db.ForeignKey(Real_estate.real_estate_id))
+    transaction_re_id = db.Column(db.Float, primary_key=True)
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
+    real_estate_id = db.Column(db.Float, db.ForeignKey(Real_estate.real_estate_id))
 
 
 class Bond(db.Model):
-    bond_id = db.Column(db.Integer, primary_key=True)
+    bond_id = db.Column(db.Float, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    value = db.Column(db.Integer, nullable=False)
+    value = db.Column(db.Float, nullable=False)
     maturation_date = db.Column(db.Date, nullable=False, default=date.today())
     transactions_bond = db.relationship('Transaction_bond', backref=db.backref('Bond', uselist=False))
     def __repr__(self):
         return '<Bond %r>' % self.name
 
 class Transaction_bond(db.Model):
-    transaction_bond_id = db.Column(db.Integer, primary_key=True)
-    transaction_id = db.Column(db.Integer, db.ForeignKey(Transaction.transaction_id))
-    bond_id = db.Column(db.Integer, db.ForeignKey(Bond.bond_id))
+    transaction_bond_id = db.Column(db.Float, primary_key=True)
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
+    bond_id = db.Column(db.Float, db.ForeignKey(Bond.bond_id))
     
 
 class Stock(db.Model):
-    stock_id = db.Column(db.Integer, primary_key=True)
+    stock_id = db.Column(db.Float, primary_key=True)
     symbol = db.Column(db.String(6), nullable=False)
     exchange = db.Column(db.String(80), nullable=False)
-    num_stocks = db.Column(db.Integer, nullable=False)
+    num_stocks = db.Column(db.Float, nullable=False)
     transactions_stock = db.relationship('Transaction_stock', backref=db.backref('Stock', uselist=False))
     stock_ids = db.relationship('Stock_value', backref=db.backref('Stock', uselist=True))
     def __repr__(self):
         return '<Stock %r>' % self.symbol
 
 class Stock_value(db.Model):
-    stock_value_id = db.Column(db.Integer, primary_key=True)
-    stock_id = db.Column(db.Integer, db.ForeignKey(Stock.stock_id))
+    stock_value_id = db.Column(db.Float, primary_key=True)
+    stock_id = db.Column(db.Float, db.ForeignKey(Stock.stock_id))
     date = db.Column(db.Date, nullable=False, default=date.today())
-    value = db.Column(db.Integer, nullable=False)
+    value = db.Column(db.Float, nullable=False)
 
 class Transaction_stock(db.Model):
-    transaction_stock_id = db.Column(db.Integer, primary_key=True)
-    transaction_id = db.Column(db.Integer, db.ForeignKey(Transaction.transaction_id))
-    stock_id = db.Column(db.Integer, db.ForeignKey(Stock.stock_id))
+    transaction_stock_id = db.Column(db.Float, primary_key=True)
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
+    stock_id = db.Column(db.Float, db.ForeignKey(Stock.stock_id))
     
 
 class Tag(db.Model):
-    tag_id = db.Column(db.Integer, primary_key=True)
+    tag_id = db.Column(db.Float, primary_key=True)
     tag_name = db.Column(db.String(80), nullable=False)
     account_tags = db.relationship('Account_tag', backref=db.backref('Tag', uselist=True))
     transaction_tags = db.relationship('Transaction_tag', backref=db.backref('Tag', uselist=True))
@@ -153,14 +153,14 @@ class Tag(db.Model):
         return '<Tag %r>' % self.tag_name
 
 class Transaction_tag(db.Model):
-    transaction_tag_id = db.Column(db.Integer, primary_key=True)
-    transaction_id = db.Column(db.Integer, db.ForeignKey(Transaction.transaction_id))
-    tag_id = db.Column(db.Integer, db.ForeignKey(Tag.tag_id))
+    transaction_tag_id = db.Column(db.Float, primary_key=True)
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
+    tag_id = db.Column(db.Float, db.ForeignKey(Tag.tag_id))
     
 class Account_tag(db.Model):
-    account_tag_id = db.Column(db.Integer, primary_key=True)
-    account_id = db.Column(db.Integer, db.ForeignKey(Account.account_id))
-    tag_id = db.Column(db.Integer, db.ForeignKey(Tag.tag_id))
+    account_tag_id = db.Column(db.Float, primary_key=True)
+    account_id = db.Column(db.Float, db.ForeignKey(Account.account_id))
+    tag_id = db.Column(db.Float, db.ForeignKey(Tag.tag_id))
     
 
 

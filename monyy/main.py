@@ -92,6 +92,7 @@ def index():
     baa = BankAccountAccessor()
     ba = BondAccessor()
     try:
+        #Bank Accounts
         bank_accounts = baa.getUserAccounts(current_user)
         for account in bank_accounts:
             #print(account)
@@ -116,6 +117,20 @@ def index():
             #cash.update(bank_name= transactions)
             cash[bank_name] = transactions
         cash = json.dumps(cash)
+        #Bonds
+        bond_accounts = ba.getUserAccounts(current_user)
+        for account in bond_accounts:
+            transactions={}
+            bond_transactions = ba.getAllTransactions(current_user, account)
+            ex_trans = bond_transactions[0]
+            bond_name = ex_trans.Bond.name 
+            temp = {
+                'maturity-date' : str(ex_trans.Bond.maturation_date),
+                'amount' : ex_trans.Bond.value,
+            }
+            bonds[bond_name] = temp
+        print(bonds)
+        bonds = json.dumps(bonds)
 
     except Exception as error:
         print(error)
