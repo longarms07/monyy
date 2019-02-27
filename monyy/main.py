@@ -10,26 +10,26 @@ import json
 
 @app.route("/")
 def hello():
-    db.drop_all()
-    db.create_all()
-    db.session.query(Account).delete()
-    db.session.query(User).delete()
-    db.session.query(Transaction).delete()
-    db.session.query(Bank_account).delete()
-    db.session.query(Transaction_bank_account).delete()
-    db.session.query(Bond).delete()
-    db.session.query(Transaction_bond).delete()
-    db.session.query(Stock).delete()
-    db.session.query(Stock_value).delete()
-    db.session.query(Transaction_stock).delete()
-    db.session.query(Debt).delete()
-    db.session.query(Transaction_debt).delete()
-    db.session.query(Real_estate).delete()
-    db.session.query(Transaction_real_estate).delete()
-    db.session.query(Transaction_tag).delete()
-    db.session.query(Tag).delete()
-    db.session.query(Account_tag).delete()
-    db.session.commit()
+    # db.drop_all()
+    # db.create_all()
+    # db.session.query(Account).delete()
+    # db.session.query(User).delete()
+    # db.session.query(Transaction).delete()
+    # db.session.query(Bank_account).delete()
+    # db.session.query(Transaction_bank_account).delete()
+    # db.session.query(Bond).delete()
+    # db.session.query(Transaction_bond).delete()
+    # db.session.query(Stock).delete()
+    # db.session.query(Stock_value).delete()
+    # db.session.query(Transaction_stock).delete()
+    # db.session.query(Debt).delete()
+    # db.session.query(Transaction_debt).delete()
+    # db.session.query(Real_estate).delete()
+    # db.session.query(Transaction_real_estate).delete()
+    # db.session.query(Transaction_tag).delete()
+    # db.session.query(Tag).delete()
+    # db.session.query(Account_tag).delete()
+    # db.session.commit()
     #BAATest()
     #BondTest()
     #DebtTest()
@@ -58,7 +58,7 @@ def login():
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect("/")
+        return redirect("/index")
     form = LoginForm()
     if form.validate_on_submit():
         try:
@@ -116,7 +116,7 @@ def index():
                 transactions[id] = temp
             #cash.update(bank_name= transactions)
             cash[bank_name] = transactions
-        cash = json.dumps(cash)
+        
         #Bonds
         bond_accounts = ba.getUserAccounts(current_user)
         for account in bond_accounts:
@@ -129,7 +129,7 @@ def index():
             }
             bonds[bond_name] = temp
         #print(bonds)
-        bonds = json.dumps(bonds)
+        
         #Real Estate
         re_accounts = rea.getUserAccounts(current_user)
         for account in re_accounts:
@@ -141,7 +141,7 @@ def index():
                 'estimated value' : trans.Real_estate.estimated_value
             }
             realestate[re_name] = temp
-        realestate = json.dumps(realestate)
+        
         #debts
         debt_accounts = da.getUserAccounts(current_user)
         for account in debt_accounts:
@@ -167,19 +167,83 @@ def index():
                 'account associated' : pay_account_name,
                 'balance' : debt_balance,
             }
-            debt[debt_name] = temp
-        debt = json.dumps(debt)
-
-
+            debts[debt_name] = temp
+        
     except Exception as error:
         print(error)
+        transactions = {}
+        temp = {
+                    'name' : "No account",
+                    'date' : "No account",
+                    'amount' : "No account",
+                    'balance' : "No account",
+                }
+        transactions['None'] = temp
+        cash['No_Account'] = transactions
+        temp = {
+                'maturity-date' : '',
+                'amount' : '',
+            }
+        bonds['none'] = temp
+        temp = {
+                'original value' : '',
+                'estimated value' : '',
+        }
+        realestate['none'] = temp
+        temp = {
+                'principal' : '',
+                'interest' : '',
+                'period' : '',
+                'payment date' : '',
+                'account associated' : '',
+                'balance' : '',
+            }
+        debts['none'] = temp
+        stocks = {
+
+                'stock1' : {
+
+                                'date1' : '432.15',
+
+
+                            },
+
+                'stock2' : {
+
+                                'date1' : '432.15',
+                            },
+
+                'stock3' : {
+
+                                'date1' : '432.15',
+
+                            }
+    }
 
 
 
-    return render_template('index.html')
+    cash = json.dumps(cash)
+    bonds = json.dumps(bonds)
+    realestate = json.dumps(realestate)
+    debts = json.dumps(debts)
+    stocks = json.dumps(stocks)
+    # print(cash)
+    # print(bonds)
+    # print(realestate)
+    # print(debt)
+    # print(stocks)
+    return render_template('index.html', 
+                            username = current_user.user_name,
+                            cash=cash,
+                            stocks=stocks,
+                            bonds=bonds,
+                            realestate=realestate,
+                            debts=debts,
+                            )
 
     @app.route("index/post", methods=['POST'])
     @login_required
     def addValues():
+        pass
         
 

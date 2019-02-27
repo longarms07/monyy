@@ -121,7 +121,7 @@ class Stock(db.Model):
     stock_id = db.Column(db.Integer, primary_key=True)
     symbol = db.Column(db.String, nullable=False)
     exchange = db.Column(db.String, nullable=False)
-    num_stocks = db.Column(db.Integer, nullable=False)
+    num_stocks = db.Column(db.Integer, nullable=False) #Starting number of stocks
     transactions_stock = db.relationship('Transaction_stock', backref=db.backref('Stock', uselist=False))
     stock_ids = db.relationship('Stock_value', backref=db.backref('Stock', uselist=True))
     def __repr__(self):
