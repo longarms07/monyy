@@ -42,7 +42,7 @@ class Account(db.Model):
     
 class Transaction(db.Model):
     transaction_id = db.Column(db.Float, primary_key=True)
-    account_id = db.Column(db.Float, db.ForeignKey(Account.account_id))
+    account_id = db.Column(db.Float, db.ForeignKey(Account.account_id), nullable=False)
     transaction_type = db.Column(db.String(30), nullable=False)
     transaction_value = db.Column(db.Float, nullable=False)
     transaction_date = db.Column(db.Date, nullable=False, default=date.today())
@@ -70,8 +70,8 @@ class Bank_account(db.Model):
 
 class Transaction_bank_account(db.Model):
     transaction_ba_id =  db.Column(db.Float, primary_key=True)
-    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
-    bank_account_id = db.Column(db.Float, db.ForeignKey(Bank_account.bank_account_id))
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id), nullable=False)
+    bank_account_id = db.Column(db.Float, db.ForeignKey(Bank_account.bank_account_id), nullable=False)
 
 
 class Debt(db.Model):
@@ -80,7 +80,7 @@ class Debt(db.Model):
     principal = db.Column(db.Float, nullable=False)
     interest_rate = db.Column(db.Float, nullable=True)
     interest_period = db.Column(db.String(30), nullable = True)
-    payment_account = db.Column(db.Float, db.ForeignKey(Account.account_id))
+    payment_account = db.Column(db.Float, db.ForeignKey(Account.account_id), nullable=False)
     payment_date = db.Column(db.String(30), nullable=True)
     transactions_debt = db.relationship('Transaction_debt', backref=db.backref('Debt', uselist=False))
     def __repr__(self):
@@ -88,8 +88,8 @@ class Debt(db.Model):
 
 class Transaction_debt(db.Model):
     transaction_debt_id = db.Column(db.Float, primary_key=True)
-    transaction_id = db.Column(db.Float, db.ForeignKey('transaction.transaction_id'))
-    debt_id = db.Column(db.Float, db.ForeignKey('debt.debt_id'))
+    transaction_id = db.Column(db.Float, db.ForeignKey('transaction.transaction_id'), nullable=False)
+    debt_id = db.Column(db.Float, db.ForeignKey('debt.debt_id'), nullable=False)
     
 
 class Real_estate(db.Model):
@@ -103,8 +103,8 @@ class Real_estate(db.Model):
 
 class Transaction_real_estate(db.Model):
     transaction_re_id = db.Column(db.Float, primary_key=True)
-    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
-    real_estate_id = db.Column(db.Float, db.ForeignKey(Real_estate.real_estate_id))
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id), nullable=False)
+    real_estate_id = db.Column(db.Float, db.ForeignKey(Real_estate.real_estate_id), nullable=False)
 
 
 class Bond(db.Model):
@@ -118,8 +118,8 @@ class Bond(db.Model):
 
 class Transaction_bond(db.Model):
     transaction_bond_id = db.Column(db.Float, primary_key=True)
-    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
-    bond_id = db.Column(db.Float, db.ForeignKey(Bond.bond_id))
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id), nullable=False)
+    bond_id = db.Column(db.Float, db.ForeignKey(Bond.bond_id), nullable=False)
     
 
 class Stock(db.Model):
@@ -134,14 +134,14 @@ class Stock(db.Model):
 
 class Stock_value(db.Model):
     stock_value_id = db.Column(db.Float, primary_key=True)
-    stock_id = db.Column(db.Float, db.ForeignKey(Stock.stock_id))
+    stock_id = db.Column(db.Float, db.ForeignKey(Stock.stock_id), nullable=False)
     date = db.Column(db.Date, nullable=False, default=date.today())
     value = db.Column(db.Float, nullable=False)
 
 class Transaction_stock(db.Model):
     transaction_stock_id = db.Column(db.Float, primary_key=True)
-    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
-    stock_id = db.Column(db.Float, db.ForeignKey(Stock.stock_id))
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id), nullable=False)
+    stock_id = db.Column(db.Float, db.ForeignKey(Stock.stock_id), nullable=False)
     
 
 class Tag(db.Model):
@@ -154,13 +154,13 @@ class Tag(db.Model):
 
 class Transaction_tag(db.Model):
     transaction_tag_id = db.Column(db.Float, primary_key=True)
-    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id))
-    tag_id = db.Column(db.Float, db.ForeignKey(Tag.tag_id))
+    transaction_id = db.Column(db.Float, db.ForeignKey(Transaction.transaction_id), nullable=False)
+    tag_id = db.Column(db.Float, db.ForeignKey(Tag.tag_id), nullable=False)
     
 class Account_tag(db.Model):
     account_tag_id = db.Column(db.Float, primary_key=True)
-    account_id = db.Column(db.Float, db.ForeignKey(Account.account_id))
-    tag_id = db.Column(db.Float, db.ForeignKey(Tag.tag_id))
+    account_id = db.Column(db.Float, db.ForeignKey(Account.account_id), nullable=False)
+    tag_id = db.Column(db.Float, db.ForeignKey(Tag.tag_id), nullable=False)
     
 
 
