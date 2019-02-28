@@ -219,9 +219,9 @@
             </div>
 
             <!-- Sell Stock -->
-                <form class="form-container" action="/index/stock" method='post' role='add_stock'>
+                <form class="form-container" action="/index/sell-stock" method='post' role='sell_stock'>
 
-                    <h1>Buy Stock</h1>
+                    <h1>Sell Stock</h1>
 
                     <label for="symbol"><b>Symbol</b></label>
                     <input type="text" placeholder="Enter Stock Symbol" name="symbol" id="form-stock-symbol" required>
@@ -229,8 +229,8 @@
                     <label for="shares"><b>Number of Shares</b></label>
                     <input type="text" placeholder="Enter Number of Shares" name="shares" id="form-stock-shares" required>
 
-                    <label for="value"><b>Initial Price</b></label>
-                    <input type="text" placeholder="Enter Initial Buying Price" name="value" id="form-stocks-price" required>
+                    <label for="value"><b>Account Digits to Deposit</b></label>
+                    <input type="text" placeholder="####" name="value" id="form-stocks-sell" required>
 
                     <center>
                         <button type="submit" onclick="post('/index/stock', 'add_stock')">Add</button>
