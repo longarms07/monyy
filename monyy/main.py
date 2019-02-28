@@ -463,7 +463,6 @@ def addTransVals():
     month = request.add_trans['month']
     year = request.add_trans['year']
     amount = request.add_trans['amount']
-    balance = request.add_trans['balance']
 
     l = [name, date, amount, balance]
     print(l)
@@ -482,9 +481,8 @@ def addStockVals():
     # baa = BankAccountAccessor()
     symbol = request.add_stock['symbol']
     num_shares = request.add_stock['shares']
-    init_price = request.add_stock['value']
 
-    l = [symbol, num_shares, init_price]
+    l = [symbol, num_shares]
     print(l)
 
     # try:
