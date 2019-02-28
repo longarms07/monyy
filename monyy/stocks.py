@@ -1,10 +1,11 @@
-from iexfinance.stocks import get_historical_data, Stock
+from iexfinance.stocks import get_historical_data
+from iexfinance.stocks import Stock as Stocks
 from iexfinance.stocks import get_crypto_quotes
 from datetime import datetime, timedelta
 
 
 def returnStock(abbreviation):
-    stockprice = Stock(abbreviation).get_price()
+    stockprice = Stocks(abbreviation).get_price()
     return stockprice
 
 def stockPriceOnDay(abbreviation, on_day):
@@ -73,8 +74,8 @@ def getTaxRate(val):
     return taxedAmount
     
     
-# #r = int(input("Tax math"))
-# #print(getTaxRate(r))
-# print(returnStock('GOOGL'))  
-# print(stockPriceOnDay('GOOGL', 2))
-# print(closingPricesFrom('GOOGL', 14))
+#r = int(input("Tax math"))
+#print(getTaxRate(r))
+print(returnStock('GOOGL'))  
+print(stockPriceOnDay('GOOGL', 2))
+print(closingPricesFrom('GOOGL', 14))
