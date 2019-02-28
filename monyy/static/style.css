@@ -120,7 +120,7 @@ button {
 
 
 /* The popup form - hidden by default */
-.add-cash-popup {
+.popup {
   display: none;
   position: fixed;
   bottom:0;
