@@ -135,14 +135,14 @@ def index():
             ex_trans = bond_transactions[0]
             bond_name = ex_trans.Bond.name 
             temp = {
-                'maturity-date' : str(ex_trans.Bond.maturation_date),
+                'maturity_date' : str(ex_trans.Bond.maturation_date),
                 'amount' : ex_trans.Bond.value,
             }
             bonds[bond_name] = temp
         #print(bonds)
     except:
         temp = {
-                'maturity-date' : '',
+                'maturity_date' : '',
                 'amount' : '',
             }
         bonds['none'] = temp
@@ -154,14 +154,14 @@ def index():
             re_name = account.account_name
             trans = re_trans[0]
             temp = {
-                'original value' : trans.Real_estate.original_value,
-                'estimated value' : trans.Real_estate.estimated_value
+                'estimated_value' : trans.Real_estate.estimated_value,
+                'original_value' : trans.Real_estate.original_value,
             }
             realestate[re_name] = temp
     except:
         temp = {
-                'original value' : '',
-                'estimated value' : '',
+                'estimated_value' : '',
+                'original_value' : '',
         }
         realestate['none'] = temp
         
@@ -184,71 +184,96 @@ def index():
                 pay_date = "Autopay is off, "
                 pay_account_name = "Autopay is off, no account"
             temp = {
+                'remaining' : debt_balance,
                 'principal' : ex_trans.Debt.principal,
                 'interest' : ex_trans.Debt.interest_rate,
                 'period' : ex_trans.Debt.interest_period,
-                'payment date' : pay_date,
-                'account associated' : pay_account_name,
-                'balance' : debt_balance,
+                'payment_date' : str(pay_date),
+                'account_associated' : pay_account_name,
             }
             debts[debt_name] = temp
     except:
         temp = {
+                'remaining' : '',
                 'principal' : '',
                 'interest' : '',
                 'period' : '',
-                'payment date' : '',
-                'account associated' : '',
-                'balance' : '',
+                'payment_date' : '',
+                'account_associated' : '',
             }
         debts['none'] = temp
     try:
-        raise Exception("Implement stocks Erik!")
         closing_vals={}
         stock_data = sa.getUserAccounts()
         for account in stock_data:
             trans_list = sa.getTransactions(current_user, account, 1)
             ex_trans = trans_list[0]
-            on_day = 0
+            on_day = 1
             closing_vals = {}
-            num_of_shares = {}
-            balance = {}
+            cost_per_share = sa.getValue(ex_trans.Stock.stock_symbol)
+            balance = sa.getBalance(current_user, account, ex_trans.Transaction, ex_trans.Stock.stock_symbol)
+            num_shares = sa.getNumStocks(current_user, account, ex_trans.Transaction)
             start = datetime.now()
-            while on_day <14:
+            while on_day <=14:
                 #getValue(self, temp_stock, temp_datetime=datetime.today())
                 #getNumStocks(self,temp_user, temp_account, temp_transaction, temp_datetime=datetime.today())
                 #getBalance(self,temp_user, temp_account, temp_transaction, temp_stock, temp_datetime=datetime.today())
                 day = end = start-timedelta(days=on_day)
                 val = sa.getValue(ex_trans.Stock.stock_symbol, temp_datetime=end)
-                num = sa.getNumStocks(current_user, account, ex_trans.Transaction, temp_datetime=end)
-                bal = sa.getBalance(current_user, account, ex_trans.Transaction, ex_trans.Stock.stock_symbol, temp_datetime=end)
                 closing_vals[end] = val
-                num_of_shares[end] = num
-                balance[end] = bal
                 on_day=on_day+1
-            stocks[ex_trans.Stock.symbol] = {closing_vals, num_of_shares, balance}
-
+            temp = {
+                'num_shares' : num_shares
+                'cost_per_share' :  cost_per_share
+                'total_value' : balance
+                'closing_values' : closing_vals
+            }
+            stocks[ex_trans.Stock.symbol] = temp
     except Exception as error:
         print(error)
         stocks = {
 
-                'stock1' : {
+                'no_stocks' : {
 
-                                'date1' : '432.15',
+                                'num_shares' : 0,
 
+                                'cost_per_share' : 0,
+
+                                'total_value' : 0,
+
+                                'closing_values' : {
+
+                                                        'date1' : 0,
+
+                                                        'date2' : 0,
+
+                                                        'date3' : 0,
+
+                                                        'date4' : 0,
+
+                                                        'date5' : 0,
+
+                                                        'date6' : 0,
+
+                                                        'date7' : 0,
+
+                                                        'date8' : 0,
+
+                                                        'date9' : 0,
+
+                                                        'date10' : 0,
+
+                                                        'date11' : 0,
+
+                                                        'date12' : 0,
+
+                                                        'date13' : 0,
+
+                                                        'date14' : 0,
+
+                                }
 
                             },
-
-                'stock2' : {
-
-                                'date1' : '432.15',
-                            },
-
-                'stock3' : {
-
-                                'date1' : '432.15',
-
-                            }
     }
     cash = json.dumps(cash)
     bonds = json.dumps(bonds)
