@@ -540,7 +540,7 @@ class StockAccessor():
             raise Exception(str(error))
 
     #Make a new account
-    def makeAccount(self,temp_user, temp_name, temp_num_stocks, temp_stock_symbol, source_account, temp_exchange='NASDAQ', temp_datetime=datetime.now()):
+    def makeAccount(self,temp_user, temp_name, temp_num_stocks, temp_stock_symbol, temp_exchange='NASDAQ', temp_datetime=datetime.now()):
         #make sure that the stock symbol is valid
         try:
             returnStock(temp_stock_symbol)
@@ -570,14 +570,14 @@ class StockAccessor():
                 ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making first transaction! "+str(error))
-        try:
-            if temp_num_stocks < 0:
-                temp_num_stocks = -temp_num_stocks
-            temp_value = -(self.getValue(temp_stock_symbol, temp_datetime)*temp_num_stocks)
-            BankAccountAccessor().makeTransaction(temp_user, source_account, "TRANSFER", temp_value, 'Buying Stocks', temp_date=temp_datetime.date())
-        except Exception as error:
-            raise Exception("Could not create account! Error making bank transaction! "+str(error))
-        #make a bank account with the proper values
+        # try:
+        #     if temp_num_stocks < 0:
+        #         temp_num_stocks = -temp_num_stocks
+        #     temp_value = -(self.getValue(temp_stock_symbol, temp_datetime)*temp_num_stocks)
+        #     BankAccountAccessor().makeTransaction(temp_user, source_account, "TRANSFER", temp_value, 'Buying Stocks', temp_date=temp_datetime.date())
+        # except Exception as error:
+        #     raise Exception("Could not create account! Error making bank transaction! "+str(error))
+        # #make a bank account with the proper values
         try:
             new_stock = Stock(stock_symbol=temp_stock_symbol, exchange=temp_exchange, num_stocks=temp_num_stocks)
             db.session.add(new_stock)

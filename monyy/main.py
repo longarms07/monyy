@@ -328,16 +328,19 @@ def addTransVals():
     date = request.form['date']
     amount = request.form['amount']
     balance = request.form['balance']
+    try:
+        info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
+                ).join(Transaction
+                ).order_by(Transaction.transaction_id.desc()
+                ).join(Transaction_bank_account
+                ).join(Bank_account
+                ).filter_by(account_digits = digits
+                ).first()
 
-    info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
-            ).join(Transaction
-            ).order_by(Transaction.transaction_id.desc()
-            ).join(Transaction_bank_account
-            ).join(Bank_account
-            ).filter_by(Bank_account.account_digits = digits
-            ).first()
-
-    
+        if info is None:
+            raise Exception("Invalid account id!")
+    except Exception as error:
+        print(error)
 
 
 
@@ -355,19 +358,19 @@ def addTransVals():
 @app.route("/index/stock", methods=['POST'])
 # @login_required
 def addStockVals():
-    # baa = BankAccountAccessor()
-    symbol = request.add_stock['symbol']
-    num_shares = request.add_stock['shares']
-    init_price = request.add_stock['value']
+    sa = StockAccessor()
+    symbol = request.form['symbol']
+    num_shares = request.form['shares']
+    init_price = request.form['value']
 
-    l = [symbol, num_shares, init_price]
-    print(l)
+    #l = [symbol, num_shares, init_price]
+    #print(l)
 
-    # try:
-        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
-    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
-    # except Exception as error:
-    #     print(error)
+    try:
+        # makeAccount(self,temp_user, temp_name, temp_num_stocks, temp_stock_symbol, temp_exchange='NASDAQ', temp_datetime=datetime.now()):
+        sa.makeAccount(current_user, symbol, num_shares, symbol)
+    except Exception as error:
+        print(error)
 
     return redirect("/index")
 
