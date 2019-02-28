@@ -4,7 +4,7 @@ from .login import *
 from .db_accessor import *
 from flask import Flask, render_template, redirect, request
 from flask_login import current_user, login_user, login_required, logout_user
-from datetime import date
+from datetime import date, datetime
 import json
 
 
@@ -325,9 +325,11 @@ def addTransVals():
     digits = request.form['digits']
     digits = str(digits)
     name = request.form['name']
-    date = request.form['date']
+    day = request.form['date']
+    month = request.form['date']
+    year = request.form['date']
     amount = request.form['amount']
-    balance = request.form['balance']
+    date = date(year,month,day)
     try:
         info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
                 ).join(Transaction
@@ -344,7 +346,7 @@ def addTransVals():
 
 
 
-    l = [name, date, amount, balance]
+    l = [digits, name, date, amount, date]
     print(l)
 
     # try:
@@ -365,10 +367,21 @@ def addStockVals():
 
     #l = [symbol, num_shares, init_price]
     #print(l)
-
+    try:
+        info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
+                ).join(Transaction
+                ).order_by(Transaction.transaction_id.desc()
+                ).join(Transaction_bank_account
+                ).join(Bank_account
+                ).filter_by(account_digits = digits
+                ).first()
+        if info is None:
+            raise Exception("Invalid account id!")
+    except Exception as error:
+        print(error)
     try:
         # makeAccount(self,temp_user, temp_name, temp_num_stocks, temp_stock_symbol, temp_exchange='NASDAQ', temp_datetime=datetime.now()):
-        sa.makeAccount(current_user, symbol, num_shares, symbol)
+        sa.makeAccount(current_user, info.Account, symbol, num_shares, symbol)
     except Exception as error:
         print(error)
 
