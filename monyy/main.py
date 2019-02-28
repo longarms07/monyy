@@ -91,6 +91,7 @@ def index():
     ba = BondAccessor()
     da = DebtAccessor()
     rea = RealEstateAccessor()
+    sa = StockAccessor()
     try:
         #Bank Accounts
         bank_accounts = baa.getUserAccounts(current_user)
@@ -203,11 +204,32 @@ def index():
         debts['none'] = temp
     try:
         raise Exception("Implement stocks Erik!")
+        closing_vals={}
+        stock_data = sa.getUserAccounts()
+        for account in stock_data:
+            trans_list = sa.getTransactions(current_user, account, 1)
+            ex_trans = trans_list[0]
+            on_day = 0
+            closing_vals = {}
+            num_of_shares = {}
+            balance = {}
+            start = datetime.now()
+            while on_day <14:
+                #getValue(self, temp_stock, temp_datetime=datetime.today())
+                #getNumStocks(self,temp_user, temp_account, temp_transaction, temp_datetime=datetime.today())
+                #getBalance(self,temp_user, temp_account, temp_transaction, temp_stock, temp_datetime=datetime.today())
+                day = end = start-timedelta(days=on_day)
+                val = sa.getValue(ex_trans.Stock.symbol, temp_datetime=end)
+                num = sa.getNumStocks(current_user, account, ex_trans.Transaction, temp_datetime=end)
+                bal = sa.getBalance(current_user, account, ex_trans.Transaction, ex_trans.Stock.symbol, temp_datetime=end)
+                closing_vals[end] = val
+                num_of_shares[end] = num
+                balance[end] = bal
+                on_day=on_day+1
+            stocks[ex_trans.Stock.symbol] = {closing_vals, num_of_shares, balance}
+
     except Exception as error:
         print(error)
-        
-        
-        
         stocks = {
 
                 'stock1' : {
