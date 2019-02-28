@@ -73,8 +73,8 @@ def getTaxRate(val):
     return taxedAmount
     
     
-#r = int(input("Tax math"))
-#print(getTaxRate(r))
-print(returnStock('GOOGL'))  
-print(stockPriceOnDay('GOOGL', 2))
-print(closingPricesFrom('GOOGL', 14))
+# #r = int(input("Tax math"))
+# #print(getTaxRate(r))
+# print(returnStock('GOOGL'))  
+# print(stockPriceOnDay('GOOGL', 2))
+# print(closingPricesFrom('GOOGL', 14))

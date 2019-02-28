@@ -10,7 +10,7 @@ from .database import *
 from .stocks import *
 
 #Check that the user actually owns this account
-def ownershipCheck(self,temp_user, temp_account):
+def ownershipCheck(temp_user, temp_account):
     #check that temp_user.id == temp_account.user_id
     #Raise an exception if not
     if not temp_user.user_id == temp_account.user_id:
@@ -465,8 +465,7 @@ class StockAccessor():
             ).order_by(Transaction.transaction_id.desc()
             ).join(Transaction_stock
             ).join(Stock
-            ).limi
-            (temp_limit
+            ).limit_by(temp_limit
             ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:

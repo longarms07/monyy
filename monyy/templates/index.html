@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 
   <head>
@@ -7,7 +7,7 @@
     <script src="../static/js/Chart.js"></script>
     <script src="../static/js/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../static/style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
   </head>
 
     <body>
@@ -115,7 +115,7 @@
             POPUPS
         ----------->
         <div class="add-cash-popup" id="add-cash-popup">
-            <form action="/action_page.php" class="form-container">
+            <form class="form-container" action="/index/bank" method='post' role='form'>
 
                 <h1>Add Bank Account</h1>
 
@@ -482,7 +482,7 @@
             var bank = document.getElementById('form-cash-bank').value;
             var name = document.getElementById('form-cash-name').value;
             var acctNum = document.getElementById('form-cash-acct').value;
-            var balance = document.getElementById(form-cash-balance).value;
+            var balance = document.getElementById('form-cash-balance').value;
 
             var data = {
                             'bank' : bank,
@@ -491,10 +491,24 @@
                             'balance' : balance
             };
 
-            $.post( "/index/post", {
-                javascript_data: data
-            });
-
+            $(function() {
+                $('button').click(function() {
+                    $.ajax({
+                        url: '/index/bank',
+                        headers: {'Content-Type': 'application/json'},
+                        data: $('form').serialize(),
+                        type: 'POST',
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function(error) {
+                            console.log(response);
+                            console.log(error);
+                        }
+                    });
+                });
+            }
+            );
         }
 
 

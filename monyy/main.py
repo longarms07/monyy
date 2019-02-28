@@ -2,7 +2,7 @@ from monyy import app, db
 from .database import *
 from .login import *
 from .db_accessor import *
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import date
 import json
@@ -116,7 +116,17 @@ def index():
                 transactions[id] = temp
             #cash.update(bank_name= transactions)
             cash[bank_name] = transactions
-        
+    except: 
+        transactions = {}
+        temp = {
+                    'name' : "No account",
+                    'date' : "No account",
+                    'amount' : "No account",
+                    'balance' : "No account",
+                }
+        transactions['None'] = temp
+        cash['No_Account'] = transactions
+    try:
         #Bonds
         bond_accounts = ba.getUserAccounts(current_user)
         for account in bond_accounts:
@@ -129,7 +139,13 @@ def index():
             }
             bonds[bond_name] = temp
         #print(bonds)
-        
+    except:
+        temp = {
+                'maturity-date' : '',
+                'amount' : '',
+            }
+        bonds['none'] = temp
+    try:
         #Real Estate
         re_accounts = rea.getUserAccounts(current_user)
         for account in re_accounts:
@@ -141,7 +157,14 @@ def index():
                 'estimated value' : trans.Real_estate.estimated_value
             }
             realestate[re_name] = temp
+    except:
+        temp = {
+                'original value' : '',
+                'estimated value' : '',
+        }
+        realestate['none'] = temp
         
+    try:
         #debts
         debt_accounts = da.getUserAccounts(current_user)
         for account in debt_accounts:
@@ -168,28 +191,7 @@ def index():
                 'balance' : debt_balance,
             }
             debts[debt_name] = temp
-        
-    except Exception as error:
-        print(error)
-        transactions = {}
-        temp = {
-                    'name' : "No account",
-                    'date' : "No account",
-                    'amount' : "No account",
-                    'balance' : "No account",
-                }
-        transactions['None'] = temp
-        cash['No_Account'] = transactions
-        temp = {
-                'maturity-date' : '',
-                'amount' : '',
-            }
-        bonds['none'] = temp
-        temp = {
-                'original value' : '',
-                'estimated value' : '',
-        }
-        realestate['none'] = temp
+    except:
         temp = {
                 'principal' : '',
                 'interest' : '',
@@ -199,6 +201,13 @@ def index():
                 'balance' : '',
             }
         debts['none'] = temp
+    try:
+        raise Exception("Implement stocks Erik!")
+    except Exception as error:
+        print(error)
+        
+        
+        
         stocks = {
 
                 'stock1' : {
@@ -219,9 +228,6 @@ def index():
 
                             }
     }
-
-
-
     cash = json.dumps(cash)
     bonds = json.dumps(bonds)
     realestate = json.dumps(realestate)
@@ -241,9 +247,27 @@ def index():
                             debts=debts,
                             )
 
-    @app.route("index/post", methods=['POST'])
-    @login_required
-    def addValues():
-        pass
+@app.route("/index/bank", methods=['POST'])
+@login_required
+def addValues():
+    #jsdata = request.form['javascript_data']
+    # jsdata = request.get_json()
+    # values = json.loads(jsdata)[0]
+    baa = BankAccountAccessor()
+    bank = request.form['bank']
+    acct_name = request.form['acct-name']
+    acct_num = request.form['account']
+    balance = request.form['balance']
+    #print(bank)
+    #print(acct_name)
+    #print(acct_num)
+    #print(balance)
+    try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+        baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    except Exception as error:
+        print(error)
+
+    return redirect("/index")
         
 
