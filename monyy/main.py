@@ -297,7 +297,7 @@ def index():
 
 @app.route("/index/bank", methods=['POST'])
 @login_required
-def addBankValues():
+def addAccValues():
     #jsdata = request.form['javascript_data']
     # jsdata = request.get_json()
     # values = json.loads(jsdata)[0]
@@ -317,5 +317,120 @@ def addBankValues():
         print(error)
 
     return redirect("/index")
-        
+    
+@app.route("/index/banktrans", methods=['POST'])
+# @login_required
+def addTransVals():
+    baa = BankAccountAccessor()
+    digits = request.form['digits']
+    digits = str(digits)
+    name = request.form['name']
+    date = request.form['date']
+    amount = request.form['amount']
+    balance = request.form['balance']
+
+    info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
+            ).join(Transaction
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_bank_account
+            ).join(Bank_account
+            ).filter_by(Bank_account.account_digits = digits
+            ).first()
+
+    
+
+
+
+    l = [name, date, amount, balance]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+@app.route("/index/stock", methods=['POST'])
+# @login_required
+def addStockVals():
+    # baa = BankAccountAccessor()
+    symbol = request.add_stock['symbol']
+    num_shares = request.add_stock['shares']
+    init_price = request.add_stock['value']
+
+    l = [symbol, num_shares, init_price]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+@app.route('/index/bond', methods=['POST'])
+# @login_required
+def addBondVals():
+    # baa = BankAccountAccessor()
+    name = request.add_bond['name']
+    value = request.add_bond['value']
+    mat_date = request.add_bond['date']
+
+    l = [name, value, mat_date]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+@app.route('/index/estate', methods=['POST'])
+# @login_required
+def addEstateVals():
+    # baa = BankAccountAccessor()
+    name = request.add_estate['name']
+    orig_value = request.add_estate['origvalue']
+    est_value = request.add_estate['estvalue']
+
+    l = [name, orig_value, est_value]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+@app.route('/index/debt', methods=['POST'])
+# @login_required
+def addDebtVals():
+    # baa = BankAccountAccessor()
+    name = request.add_debt['name']
+    prin = request.add_debt['principal']
+    inter = request.add_debt['interest']
+    per = request.add_debt['period']
+
+    l = [name, prin, inter, per]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+
+@app.route('/help')
+def help():
+    return render_template('help.html')
 

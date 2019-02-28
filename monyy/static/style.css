@@ -14,9 +14,9 @@ a {
 }
 
 
-/*
- * SIDEBAR NAVIGATION
- */
+/**********************
+ * SIDEBAR NAVIGATION *
+ **********************/
 .sidenav {
     height: 100%;
     width: 300px;
@@ -64,6 +64,10 @@ a {
     transition: 0.3s;
 }
 
+
+/********
+ * MAIN *
+ ********/
 .main {
     margin-left: 300px; /* Same as the width of the sidenav */
     font-size: 28px; /* Increased text to enable scrolling */
@@ -86,6 +90,9 @@ a {
     width: 75%;
 }
 
+/**********
+ * TABLES *
+ **********/
 table {
   background: white;
   border-collapse: collapse;
@@ -103,6 +110,10 @@ tr:nth-child(even) {
   background-color: #d4d4dc;
 }
 
+
+/***********
+ * BUTTONS *
+ ***********/
 button {
     backrgound-color: #d4d4dc;
     border: none;
@@ -118,9 +129,11 @@ button {
 
 
 
-
+/*********
+ * FORMS *
+ *********/
 /* The popup form - hidden by default */
-.add-cash-popup {
+.popup {
   display: none;
   position: fixed;
   bottom:0;

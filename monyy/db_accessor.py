@@ -32,6 +32,8 @@ class BankAccountAccessor():
         #Return that list
         return accounts
         
+
+
     #get all transactions under one account
     def getAllTransactions(self,temp_user, temp_account):
         #Check that the account actually belongs to the user
