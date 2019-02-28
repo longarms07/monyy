@@ -132,6 +132,7 @@
              POPUP FORMS
             ------------->
             <button style="float:right;"><a href="/help" style="color:#1d1e22;font-size:25px" target="_blank">Help</a></button>
+            <p style="float:right;"> </p>
             <button style="float:right;"><a href="/logout" style="color:#1d1e22;font-size:25px">Logout</a></button>
 
             <!-- Add Bank Account -->
@@ -176,14 +177,23 @@
                     <label for="name"><b>Transaction Name</b></label>
                     <input type="text" placeholder="Enter Transaction Name" name="name" id="form-cashtrans-name" required>
 
-                    <label for="date"><b>Transaction Date</b></label>
-                    <input type="text" placeholder="Enter Transaction Date" name="date" id="form-cashtrans-date" required>
+                    <label for="day"><b>Transaction Day</b></label>
+                    <input type="text" placeholder="DD" name="day" id="form-cashtrans-date" required>
+
+                    <label for="month"><b>Transaction Month</b></label>
+                    <input type="text" placeholder="MM" name="month" id="form-cashtrans-month" required>
+
+                    <label for="year"><b>Transaction Year</b></label>
+                    <input type="text" placeholder="YYYY" name="year" id="form-cashtrans-year" required>
 
                     <label for="amount"><b>Amount</b></label>
                     <input type="text" placeholder="Enter Transaction Amount" name="amount" id="form-cashtrans-amount" required>
 
                     <label for="balance"><b>Balance</b></label>
                     <input type="text" placeholder="Enter Transaction Balance" name="balance" id="form-cashtrans-balance" required>
+
+                    <label for="deduction"><b>Deduction?</b></label>
+                    <input type="checkbox" name="deduction" id="form-cashtrans-deduction" required>
 
                     <center>
                         <button type="submit" onclick="post('/index/banktrans', 'add_trans')">Add</button>
@@ -363,7 +373,7 @@
                     </tbody>
                 </table>
 
-                <button id="edit-stocks">Edit</button>
+                <button id="sell-stock">Sell Stock</button>
             </center>
 
             <br/>

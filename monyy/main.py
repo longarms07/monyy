@@ -72,11 +72,11 @@ import json
 #         return redirect("/index")
 #     return render_template('login.html', title='Register', form=form)
 
-# @app.route("/logout")
-# @login_required
-# def logout():
-#     logout_user()
-#     return redirect("/login")
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/login")
 
 @app.route("/", methods=['GET', 'POST'])
 # @login_required
@@ -459,7 +459,9 @@ def addTransVals():
     # baa = BankAccountAccessor()
     digits = request.add_trans['digits']
     name = request.add_trans['name']
-    date = request.add_trans['date']
+    day = request.add_trans['day']
+    month = request.add_trans['month']
+    year = request.add_trans['year']
     amount = request.add_trans['amount']
     balance = request.add_trans['balance']
 
