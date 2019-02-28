@@ -292,52 +292,67 @@ def index():
                 # ... retrieve all
     stocks = {
                 'stock1' : {
-                                'date1' : 432.15,
-                                'date2' : 543.26,
-                                'date3' : 123.56,
-                                'date4' : 432.67,
-                                'date5' : 657.23,
-                                'date6' : 7486.32,
-                                'date7' : 4326.34,
-                                'date8' : 4326.34,
-                                'date9' : 4326.34,
-                                'date10' : 4326.34,
-                                'date11' : 4326.34,
-                                'date12' : 4326.34,
-                                'date13' : 4326.34,
-                                'date14' : 4326.34
+                                'num_shares' : 1,
+                                'cost_per_share' : 2.45,
+                                'total_value' : 45768987,
+                                'closing_values' : {
+                                                        'date1' : 432.15,
+                                                        'date2' : 543.26,
+                                                        'date3' : 123.56,
+                                                        'date4' : 432.67,
+                                                        'date5' : 657.23,
+                                                        'date6' : 7486.32,
+                                                        'date7' : 4326.34,
+                                                        'date8' : 4326.34,
+                                                        'date9' : 4326.34,
+                                                        'date10' : 4326.34,
+                                                        'date11' : 4326.34,
+                                                        'date12' : 4326.34,
+                                                        'date13' : 4326.34,
+                                                        'date14' : 4326.34
+                                }
                             },
                 'stock2' : {
-                                'date1' : 432.15,
-                                'date2' : 543.26,
-                                'date3' : 123.56,
-                                'date4' : 432.67,
-                                'date5' : 657.23,
-                                'date6' : 7486.32,
-                                'date7' : 4326.34,
-                                'date8' : 4326.34,
-                                'date9' : 4326.34,
-                                'date10' : 4326.34,
-                                'date11' : 4326.34,
-                                'date12' : 4326.34,
-                                'date13' : 4326.34,
-                                'date14' : 4326.34
+                                'num_shares' : 2,
+                                'cost_per_share' : 2.45,
+                                'total_value' : 45768987,
+                                'closing_values' : {
+                                                        'date1' : 432.15,
+                                                        'date2' : 543.26,
+                                                        'date3' : 123.56,
+                                                        'date4' : 432.67,
+                                                        'date5' : 657.23,
+                                                        'date6' : 7486.32,
+                                                        'date7' : 4326.34,
+                                                        'date8' : 4326.34,
+                                                        'date9' : 4326.34,
+                                                        'date10' : 4326.34,
+                                                        'date11' : 4326.34,
+                                                        'date12' : 4326.34,
+                                                        'date13' : 4326.34,
+                                                        'date14' : 4326.34
+                                }
                             },
                 'stock3' : {
-                                'date1' : 432.15,
-                                'date2' : 543.26,
-                                'date3' : 123.56,
-                                'date4' : 432.67,
-                                'date5' : 657.23,
-                                'date6' : 7486.32,
-                                'date7' : 4326.34,
-                                'date8' : 4326.34,
-                                'date9' : 4326.34,
-                                'date10' : 4326.34,
-                                'date11' : 4326.34,
-                                'date12' : 4326.34,
-                                'date13' : 4326.34,
-                                'date14' : 4326.34
+                                'num_shares' : 3,
+                                'cost_per_share' : 2.45,
+                                'total_value' : 45768987,
+                                'closing_values' : {
+                                                        'date1' : 432.15,
+                                                        'date2' : 543.26,
+                                                        'date3' : 123.56,
+                                                        'date4' : 432.67,
+                                                        'date5' : 657.23,
+                                                        'date6' : 7486.32,
+                                                        'date7' : 4326.34,
+                                                        'date8' : 4326.34,
+                                                        'date9' : 4326.34,
+                                                        'date10' : 4326.34,
+                                                        'date11' : 4326.34,
+                                                        'date12' : 4326.34,
+                                                        'date13' : 4326.34,
+                                                        'date14' : 4326.34
+                                }
                             }
                 # ... retrieve all
     }
@@ -374,6 +389,7 @@ def index():
 
     debts = {
                 'debt1' : {
+                                'remaining' : 145000,
                                 'principal' : 240000,
                                 'interest' : 12.5,
                                 'period' : 'Monthly',
@@ -382,6 +398,7 @@ def index():
 
                           },
                 'debt2' : {
+                                'remaining'
                                 'principal' : 240000,
                                 'interest' : 12.5,
                                 'period' : 'Monthly',
@@ -440,6 +457,7 @@ def addAcctVals():
 # @login_required
 def addTransVals():
     # baa = BankAccountAccessor()
+    digits = request.add_trans['digits']
     name = request.add_trans['name']
     date = request.add_trans['date']
     amount = request.add_trans['amount']
@@ -532,3 +550,8 @@ def addDebtVals():
     #     print(error)
 
     return redirect("/index")
+
+
+@app.route('/help')
+def help():
+    return render_template('help.html')
