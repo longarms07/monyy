@@ -1,11 +1,10 @@
-from iexfinance.stocks import get_historical_data
-from iexfinance.stocks import Stock as Stocks
+from iexfinance.stocks import get_historical_data, Stock
 from iexfinance.stocks import get_crypto_quotes
 from datetime import datetime, timedelta
 
 
 def returnStock(abbreviation):
-    stockprice = Stocks(abbreviation).get_price()
+    stockprice = Stock(abbreviation).get_price()
     return stockprice
 
 def stockPriceOnDay(abbreviation, on_day):
