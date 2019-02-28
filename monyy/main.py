@@ -297,7 +297,7 @@ def index():
 
 @app.route("/index/bank", methods=['POST'])
 @login_required
-def addValues():
+def addBankValues():
     #jsdata = request.form['javascript_data']
     # jsdata = request.get_json()
     # values = json.loads(jsdata)[0]
