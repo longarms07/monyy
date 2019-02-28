@@ -605,6 +605,9 @@ class StockAccessor():
     def sellStocks(self,temp_user, source_account, dest_account,temp_stock_symbol, temp_num_stocks, temp_note, temp_datetime=datetime.today()):
         if temp_num_stocks < 0:
             temp_num_stocks = -temp_num_stocks
+        transactions = self.getTransactions(temp_user, dest_account, 1)
+        if temp_num_stocks > self.getNumStocks(temp_user, dest_account, transactions[0].Transaction):
+            raise Exception("You don't own that many stock of this symbol")
         temp_value = (self.getValue(temp_stock_symbol, temp_datetime)*temp_num_stocks)
         try:
             BankAccountAccessor().makeTransaction(temp_user, source_account, "TRANSFER", temp_value, temp_note, temp_date=temp_datetime.date())
