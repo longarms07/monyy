@@ -205,7 +205,7 @@ def index():
         debts['none'] = temp
     try:
         closing_vals={}
-        stock_data = sa.getUserAccounts()
+        stock_data = sa.getUserAccounts(current_user)
         for account in stock_data:
             trans_list = sa.getTransactions(current_user, account, 1)
             ex_trans = trans_list[0]
@@ -305,7 +305,7 @@ def addAccValues():
     bank = request.form['bank']
     acct_name = request.form['acct-name']
     acct_num = request.form['account']
-    balance = request.form['balance']
+    #balance = request.form['balance']
     #print(bank)
     #print(acct_name)
     #print(acct_num)
