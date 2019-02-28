@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+
+
+  <head>
+    <title>Monyy</title>
+    <script src="../static/js/Chart.js"></script>
+    <script src="../static/js/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+
+    <body>
+
+        <!-----------------------
+            SIDEBAR NAVIGATION
+        ------------------------->
+        <div class="sidenav">
+
+            <!-- CASH / BANK ACCOUNTS -->
+            <a href="#cash" class="sidebar-section">
+                <img src="../static/img/bank.png" alt="Bank">
+                 Cash
+             </a>
+            <!-- Top 3 bank accounts in descending order by amount of cash should be displayed.
+                 When clicked, they should bring the user to the part of the web page that displays bank account information.
+                 I'm thinking there's a drop down menu the user can use to select an account.
+                 Then, the graph/other information will change accordingly. -->
+            <div id="list-cash">
+                <a href="#cash"><button type="button" id="acct1"></button></a>
+                <a href="#cash"><button type="button" id="acct2"></button></a>
+                <a href="#cash"><button type="button" id="acct3"></button></a>
+            </div>
+            <!-- When view all is clicked, the menu should expand to display all accts.
+                 When expanded, a "Collapse" button should display underneath all accts.
+                 When collapsed, menu should return to top 3 -->
+            <center>
+            <button type="button" id="viewall-cash" onclick="viewAllCash()" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button" id="add-bankacct" onclick="addBankAccount()">+ Add Bank Account</button>
+            <br/>
+
+
+            <!-- STOCKS -->
+            <a href="#stocks" class="sidebar-section">
+                <img src="../static/img/chart.png" alt="Stock Chart">
+                 Stocks</a>
+            <button type="button" id="stock1"></button>
+            <button type="button" id="stock2"></button>
+            <button type="button" id="stock3"></button>
+            <center>
+            <button type="button" id="viewall-stocks" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button" id="add-stock">+ Add Stock</button>
+            <br/>
+
+            <!-- BONDS -->
+            <a href="#bonds" class="sidebar-section">
+                <img src="../static/img/bonds.png" alt="Bond"> 
+                Bonds
+            </a>
+            <button type="button" id="bond1"></button>
+            <button type="button" id="bond2"></button>
+            <button type="button" id="bond3"></button>
+            <center>
+            <button type="button" id="viewall-bonds" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button" id="add-bonds">+ Add Bond</button>
+            <br/>
+
+            <!-- REAL ESTATE -->
+            <a href="#realestate" class="sidebar-section">
+                <img src="../static/img/realestate.png" alt="Real Estate"> 
+                Real Estate
+            </a>
+            <button type="button" id="realestate1"></button>
+            <button type="button" id="realestate2"></button>
+            <button type="button" id="realestate3"></button>
+            <center>
+            <button type="button" id="viewall-estate" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button" id="add-estate">+ Add Real Estate</button>
+            <br/>
+
+            <!-- CRYPTOCURRENCY -->
+<!--             <a href="#cryptocurrency">
+                <img src="../static/img/bitcoin.png" alt="Bitcoin"> 
+                Cryptocurrency
+            </a>
+            <button type="button">Crypto1</button>
+            <button type="button">Crypto2</button>
+            <button type="button">Crypto3</button>
+            <center>
+            <button type="button" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button">+ Add Cryptocurrency</button>
+            <br/>
+ -->
+            <!-- DEBTS -->
+            <a href="#debts" class="sidebar-section">
+                <img src="../static/img/debt.png" alt="Debt">
+                 Debt</a>
+            <button type="button" id="debt1"></button>
+            <button type="button" id="debt2"></button>
+            <button type="button" id="debt3"></button>
+            <center>
+            <button type="button" id="viewall-debt" style="padding: 6px 8px 6px 0px;">View All</button>
+            </center>
+            <button type="button" id="add-debt">+ Add Debt</button>
+            <br/>
+            <br/>
+        </div>
+
+        <!---------
+            POPUPS
+        ----------->
+        <div class="add-cash-popup" id="add-cash-popup">
+            <form action="/action_page.php" class="form-container">
+
+                <h1>Add Bank Account</h1>
+
+                <label for="bank"><b>Bank</b></label>
+                <input type="text" placeholder="Enter Bank" name="bank" id="form-cash-bank" required>
+
+                <label for="acct-name"><b>Account Name</b></label>
+                <input type="text" placeholder="Account Name" name="acct-name" id="form-cash-name" required>
+
+                <label for="account"><b>Account Number (last 4 digits)</b></label>
+                <input type="text" placeholder="Enter last 4 digits" name="account" id="form-cash-acct" required>
+
+                <br/>
+
+                <label for="balance"><b>Balance</b></label>
+                <input type="text" placeholder="Enter Balance" name="balance" id="form-cash-balance" required>
+
+                <br/>
+                <br/>
+
+                <center>
+                    <button type="submit" onclick="postAddBankAcct()">Add</button>
+                    <button type="button" onclick="closeAddBankAccount()">Cancel</button>
+                </center>
+            </form>
+        </div>
+        <div class="add-stock-popup">
+
+        </div>
+        <div class="add-bond-popup">
+
+        </div>
+        <div class="add-realestate-popup">
+
+        </div>
+        <div class="add-debt-popup">
+
+        </div>
+
+
+
+
+        <!---------------------
+            SUMMARY SECTIONS
+        ----------------------->
+        <div class="main">
+
+            <h2>Welcome, {{username}}.</h2>
+
+            <div class="display-countworth">
+                <h1> {{rampcount}} DAYS UNTIL BANKRUPTCY</h1>
+            </div>
+
+            <div class="display-countworth">
+                <h1> NET WORTH: ${{networth}}</h1>
+            </div>
+
+<!--             <center>
+                <div class="chart">
+                    <canvas id="chart-networth" width="800" height="500"></canvas>
+                </div>
+            </center> -->
+
+
+            <!-- CASH -->
+            <h1 id="cash">Cash</h1>
+
+            <select id="select-cash" onchange="changeCashView()">
+            </select>
+
+            <!-- Summary summarized by a table -->
+            <center>
+                <h3 id="cash-acct"></h3>
+
+                <table>
+                    <thead>
+                        <th>Date</th>
+                        <th>Transaction</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                    </thead>
+                    <tbody id="table-cash">
+                    </tbody>
+                </table>
+
+                <button id="edit-cash">Edit</button>
+            </center>
+
+            <br/>
+
+            <!-- STOCKS -->
+            <h2>Stocks</h2>
+
+            <select id="select-stocks">
+            </select>
+
+            <!-- Stocks summarized by a line graph -->
+            <center>
+                <h2 id="stock-current"></h2>
+                <div class="chart">
+                    <canvas id="chart-stocks" width="800" height="500"></canvas>
+                </div>
+
+                <button id="edit-stocks">Edit</button>
+            </center>
+
+            <br/>
+
+            <!-- BONDS -->
+            <h2>Bonds</h2>
+
+            <center>
+                <table>
+                        <th>Name</th>
+                        <th>Maturity Date</th>
+                        <th>Amount</th>
+                </table>
+            </center>
+
+            <!-- REAL ESTATE -->
+            <h2>Real Estate</h2>
+
+            <center>
+                <table>
+                        <th>Name</th>
+                        <th>Maturity Date</th>
+                        <th>Amount</th>
+                </table>
+            </center>
+
+<!--             <h2>Cryptocurrency</h2>
+
+            <select>
+                <option value="crypto1">Crypto1</option>
+                <option value="crypto2">Crypto2</option>
+                <option value="crypto3">Crypto3</option>
+            </select> -->
+
+            <!-- DEBT -->
+            <h2>Debt</h2>
+
+            <center>
+                <table>
+                        <th>Name/Lender</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Period</th>
+                        <th>Payment Date</th>
+                        <th>Account Associated</th>
+                </table>
+            </center>
+
+
+    <script src="../static/js/monyy-script.js"></script>
+    <script>
+        var cash =  JSON.parse({{ cash|tojson }});
+        var stocks = JSON.parse({{stocks|tojson }});
+        var bonds = JSON.parse({{bonds|tojson }});
+        var realestate = JSON.parse({{realestate|tojson }});
+        var debts = JSON.parse({{debts|tojson }});
+
+        /**************
+         * CASH SETUP *
+         **************/
+
+        /*
+         * SIDEBAR
+         */
+
+        /*
+         * Display top 3 accounts
+         */
+        // get key values
+        var keysCash = Object.keys(cash);
+
+        // reorder from highest to lowest amount of cash
+        var swapKeys = function(array, A, B) {
+            var temp = array[A];
+            array[A] = array[B];
+            array[B] = temp;
+        }
+
+
+            var same = false;
+            var oldKeysCash;
+            var acct1;
+            var acct2;
+            var trans1Key;
+            var trans2Key;
+
+            while (same == false) {
+                oldKeysCash = keysCash;
+
+                for (var i = 0; i < keysCash.length - 1; i++) {
+                    // console.log("sorting...")
+                    acct1 = cash[keysCash[i+1]];
+                    acct2 = cash[keysCash[i]];
+                    trans1Key = Object.keys(acct1)[0];
+                    trans2Key = Object.keys(acct2)[0];
+                    // console.log(acct1[trans1Key].balance);
+                    // console.log(acct2[trans2Key].balance);
+
+                    if (acct2[trans2Key].balance < acct1[trans1Key].balance) {
+                        swapKeys(keysCash, i + 1, i);
+                        // console.log("swapping...");
+                    }
+                }
+
+                if (oldKeysCash == keysCash) {
+                    same = true;
+                    // console.log(keysCash);
+
+                }
+            }
+
+        // get 3 permanent buttons from sidebar & set
+        button1Cash = document.getElementById('acct1');
+        button1Cash.innerText = keysCash[0];
+        button1Cash.addEventListener('click', function(){sideClickAcct(button1Cash.innerHTML)});
+
+        button2Cash = document.getElementById('acct2');
+        button2Cash.innerText = keysCash[1];
+        button2Cash.addEventListener('click', function(){sideClickAcct(button2Cash.innerHTML)});
+
+        button3Cash = document.getElementById('acct3');
+        button3Cash.innerText = keysCash[2];
+        button3Cash.addEventListener('click', function(){sideClickAcct(button3Cash.innerHTML)});
+
+
+        /*
+         * View All Button
+         */
+        var collapse = false
+        var extraCashAccts = [];
+
+        var viewAllCash = function() {
+
+            var div = document.getElementById('list-cash');
+            buttonViewAll = document.getElementById('viewall-cash');
+
+            if (!collapse) {
+                console.log('viewAllCash');
+
+                var button;
+                var ahref;
+
+                for (var i = 3; i < keysCash.length; i++) {
+                    // console.log('for-loop');
+                    button = document.createElement('button');
+                    button.innerHTML = keysCash[i];
+                    button.addEventListener('click', function(){sideClickAcct(button.innerHTML)});
+
+                    ahref = document.createElement('a');
+                    ahref.href = '#cash';
+                    ahref.appendChild(button);
+
+                    div.append(ahref);
+                    extraCashAccts.push(ahref);
+                }
+
+                collapse = true;
+
+                buttonViewAll.innerText = 'Collapse';
+
+                // console.log(extraCashAccts);
+
+            } else {
+
+                // console.log(extraCashAccts);
+
+                for (var i = 0; i < extraCashAccts.length; i++) {
+                    extraCashAccts[i].parentNode.removeChild(extraCashAccts[i]);
+                }
+
+                extraCashAccts = [];
+
+                collapse = false;
+
+                buttonViewAll.innerText = 'View All';
+            }
+        }
+
+
+        /*
+         * Add Bank Account Button
+         */
+
+        var addBankAccount = function() {
+            document.getElementById('add-cash-popup').style.display = "block";
+        }
+
+        var closeAddBankAccount = function() {
+            document.getElementById('add-cash-popup').style.display = "none";
+        }
+
+        var postAddBankAcct = function() {
+            var bank = document.getElementById('form-cash-bank').value;
+            var name = document.getElementById('form-cash-name').value;
+            var acctNum = document.getElementById('form-cash-acct').value;
+            var balance = document.getElementById(form-cash-balance).value;
+
+            var data = {
+                            'bank' : bank,
+                            'name' : name,
+                            'number' : acctNum,
+                            'balance' : balance
+            };
+
+            $.post( "/index/post", {
+                javascript_data: data
+            });
+
+        }
+
+        /*
+         * SELECT OPTIONS & FUNCTIONALITY
+         */
+        var selectCash = document.getElementById('select-cash');
+        var option;
+        for (var i = 0; i < keysCash.length; i++) {
+            option = document.createElement('option');
+            option.text = keysCash[i];
+            selectCash.add(option);
+        }
+
+        var changeCashView = function() {
+            selected = selectCash.options[selectCash.selectedIndex].value;
+
+            var newBody = document.createElement('tbody');
+
+            var acct = cash[selected];
+            var acctKeys = Object.keys(acct);
+
+            var newRow;
+            var date;
+            var trans;
+            var amount;
+            var balance;
+            var newText;
+
+            for (var i = 0; i < acctKeys.length; i++) {
+                newRow = newBody.insertRow(newBody.rows.length);
+
+                date = newRow.insertCell(0);
+                newText = document.createTextNode(acct[acctKeys[i]].date);
+                date.appendChild(newText);
+
+                trans = newRow.insertCell(1);
+                newText = document.createTextNode(acct[acctKeys[i]].name);
+                trans.appendChild(newText);
+
+                amount = newRow.insertCell(2);
+                newText = document.createTextNode(acct[acctKeys[i]].amount);
+                amount.appendChild(newText);
+
+                balance = newRow.insertCell(3);
+                newText = document.createTextNode(acct[acctKeys[i]].balance);
+                balance.appendChild(newText);
+            }
+
+            oldBody = document.getElementById('table-cash');
+            oldBody.parentNode.replaceChild(newBody, oldBody);
+            newBody.id = 'table-cash';
+        }
+
+        // call to display default selected account
+        changeCashView();
+
+        var sideClickAcct = function(account) {
+            console.log('sideClickAcct');
+            selectCash.value = account;
+            changeCashView();
+        }
+
+
+
+    </script>
+       
+    </body>
+</html> 
