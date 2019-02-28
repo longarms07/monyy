@@ -248,7 +248,7 @@
                     <input type="text" placeholder="Enter Estimated Value" name="estvalue" id="form-estate-estvalue" required>
 
                     <center>
-                        <button type="submit" onclick="postCashAddTransaction()">Add</button>
+                        <button type="submit" onclick="post('/index/estate', 'add_estate')">Add</button>
                         <button type="button" onclick="closePopUp('add-realestate-popup')">Cancel</button>
                     </center>
                 </form>
@@ -283,6 +283,9 @@
                     </center>
                 </form>
             </div>
+
+
+
 
             <!---------------------
                 SUMMARY SECTIONS
@@ -353,9 +356,13 @@
 
             <center>
                 <table>
+                    <thead>
                         <th>Name</th>
                         <th>Maturity Date</th>
                         <th>Amount</th>
+                    </thead>
+                    <tbody id="table-bonds">
+                    </tbody>
                 </table>
             </center>
 
@@ -364,9 +371,14 @@
 
             <center>
                 <table>
-                        <th>Name</th>
-                        <th>Maturity Date</th>
-                        <th>Amount</th>
+                    <thead>
+                        <th>Name/Address</th>
+                        <th>Original Value</th>
+                        <th>Estimated Value</th>
+                    </thead>
+                    <tbody id="table-estate">
+                    </tbody>
+
                 </table>
             </center>
 
@@ -382,17 +394,27 @@
 
             <center>
                 <table>
+                    <thead>
                         <th>Name/Lender</th>
                         <th>Principal</th>
                         <th>Interest</th>
                         <th>Period</th>
                         <th>Payment Date</th>
-                        <th>Account Associated</th>
+                        <!-- <th>Account Associated</th> -->
+                    </thead>
+                    <tbody id="table-debt">
+                    </tbody>
                 </table>
             </center>
 
 
     <script src="../static/js/monyy-script.js"></script>
+
+
+
+
+
+    <!---------- START JAVASCRIPT --------->
     <script>
         
         // get info for all sections
@@ -405,15 +427,15 @@
         /*
          * helper function for sorting
          */
-        var swapKeys = function(array, A, B) {
+        function swapKeys(array, A, B) {
                 var temp = array[A];
                 array[A] = array[B];
                 array[B] = temp;
-            }
+        }
         /*
          * sort function
          */
-        var sortKeys = function(keyList, jsondata) {
+        function sortKeys(keyList, jsondata) {
                 var same = false;
                 var keyList;
                 var oldKeyList;
@@ -612,13 +634,10 @@
             // get 3 permanent buttons from sidebar & set
             button1Bonds = document.getElementById('bond1');
             button1Bonds.innerText = keysBonds[0];
-            button1Bonds.addEventListener('click', function(){sideClickAcct(button1Bonds.innerHTML)});
             button2Bonds = document.getElementById('bond2');
             button2Bonds.innerText = keysBonds[1];
-            button2Bonds.addEventListener('click', function(){sideClickAcct(button2Bonds.innerHTML)});
             button3Bonds = document.getElementById('bond3');
             button3Bonds.innerText = keysBonds[2];
-            button3Bonds.addEventListener('click', function(){sideClickAcct(button3Bonds.innerHTML)});
 
             /*
              * View All Button
@@ -840,54 +859,9 @@
 
 
 
-
-            /*
-             * SELECT OPTIONS & FUNCTIONALITY
-             */
-            var selectCash = document.getElementById('select-cash');
-            var option;
-            for (var i = 0; i < keysCash.length; i++) {
-                option = document.createElement('option');
-                option.text = keysCash[i];
-                selectCash.add(option);
-            }
-            function changeCashView() {
-                selected = selectCash.options[selectCash.selectedIndex].value;
-                var newBody = document.createElement('tbody');
-                var acct = cash[selected];
-                var acctKeys = Object.keys(acct);
-                var newRow;
-                var date;
-                var trans;
-                var amount;
-                var balance;
-                var newText;
-                for (var i = 0; i < acctKeys.length; i++) {
-                    newRow = newBody.insertRow(newBody.rows.length);
-                    date = newRow.insertCell(0);
-                    newText = document.createTextNode(acct[acctKeys[i]].date);
-                    date.appendChild(newText);
-                    trans = newRow.insertCell(1);
-                    newText = document.createTextNode(acct[acctKeys[i]].name);
-                    trans.appendChild(newText);
-                    amount = newRow.insertCell(2);
-                    newText = document.createTextNode(acct[acctKeys[i]].amount);
-                    amount.appendChild(newText);
-                    balance = newRow.insertCell(3);
-                    newText = document.createTextNode(acct[acctKeys[i]].balance);
-                    balance.appendChild(newText);
-                }
-                oldBody = document.getElementById('table-cash');
-                oldBody.parentNode.replaceChild(newBody, oldBody);
-                newBody.id = 'table-cash';
-            }
-            // call to display default selected account
-            changeCashView();
-            function sideClickAcct(selectList, val) {
-                selectList.value = val;
-                changeCashView();
-            }
-
+        /******************
+         * FORM FUNCTIONS *
+         ******************/
         /*
          * POST FUNCTION
          */
@@ -913,7 +887,7 @@
         }
 
         /*
-         * Add Transaction Button
+         * POP UP FUNCTIONS
          */
         function openPopUp(id) {
             document.getElementById(id).style.display = "block";
@@ -921,26 +895,210 @@
         function closePopUp(id) {
             document.getElementById(id).style.display = "none";
         }
-        function postCashAddTransaction() {
-            $(function() {
-                $('button').click(function() {
-                    $.ajax({
-                        url: '/index/banktrans',
-                        headers: {'Content-Type': 'application/json'},
-                        data: $('add_trans').serialize(),
-                        type: 'POST',
-                        success: function(response) {
-                            console.log(response);
-                        },
-                        error: function(error) {
-                            console.log(response);
-                            console.log(error);
-                        }
-                    });
-                });
+
+
+
+
+        /**********************************
+         * SELECT AND TABLE/CHARTS : CASH *
+         **********************************/
+        if ({{ cash|tojson }} != '{}') {
+            // populate select dropdown with all accounts
+            var selectCash = document.getElementById('select-cash');
+            var option;
+            for (var i = 0; i < keysCash.length; i++) {
+                option = document.createElement('option');
+                option.text = keysCash[i];
+                selectCash.add(option);
             }
-            );
+            
+            /*
+             * Called every time a different account is selected.
+             * Populates table with data.
+             */
+            function changeCashView() {
+                selected = selectCash.options[selectCash.selectedIndex].value;
+                var newBody = document.createElement('tbody');
+                var acct = cash[selected];
+                var acctKeys = Object.keys(acct);
+                var newRow;
+                var date;
+                var trans;
+                var amount;
+                var balance;
+                var newText;
+                for (var i = 0; i < acctKeys.length; i++) {
+                    newRow = newBody.insertRow(newBody.rows.length);
+
+                    date = newRow.insertCell(0);
+                    newText = document.createTextNode(acct[acctKeys[i]].date);
+                    date.appendChild(newText);
+
+                    trans = newRow.insertCell(1);
+                    newText = document.createTextNode(acct[acctKeys[i]].name);
+                    trans.appendChild(newText);
+
+                    amount = newRow.insertCell(2);
+                    newText = document.createTextNode(acct[acctKeys[i]].amount);
+                    amount.appendChild(newText);
+
+                    balance = newRow.insertCell(3);
+                    newText = document.createTextNode(acct[acctKeys[i]].balance);
+                    balance.appendChild(newText);
+                }
+                oldBody = document.getElementById('table-cash');
+                oldBody.parentNode.replaceChild(newBody, oldBody);
+                newBody.id = 'table-cash';
+            }
+
+
+            /*
+             * When an account is selected from the sidebar,
+             * change the value in select and update table/graph to reflect changes.
+             */
+            function sideClickAcct(val) {
+                selectCash.value = val;
+                changeCashView();
+            }
+
+            // call to display default selected account
+            changeCashView();
         }
+
+
+
+
+        /***********************************
+         * SELECT AND TABLE/CHARTS : STOCKS *
+         ***********************************/
+
+        if ({{ stocks|tojson }} != '{}') {
+            // populate select dropdown with all accounts
+            var selectStocks = document.getElementById('select-stocks');
+            var option;
+            for (var i = 0; i < keysStocks.length; i++) {
+                option = document.createElement('option');
+                option.text = keysStocks[i];
+                selectStocks.add(option);
+            }
+        }
+
+
+
+        /***********************************
+         * SELECT AND TABLE/CHARTS : BONDS *
+         **********************************/
+        if ({{ bonds|tojson }} != '{}') {
+
+            var bodyBonds = document.getElementById('table-bonds');
+
+            var nameBond;
+            var maturityBond;
+            var amountBond;
+            var newRow;
+            var newText;
+
+
+            for (var i = 0; i < keysBonds.length; i++) {
+                newRow = bodyBonds.insertRow(bodyBonds.rows.length);
+
+                nameBond = newRow.insertCell(0);
+                newText = document.createTextNode(keysBonds[i]);
+                nameBond.appendChild(newText);
+
+                maturityBond = newRow.insertCell(1);
+                newText = document.createTextNode(bonds[keysBonds[i]].maturity_date);
+                maturityBond.appendChild(newText);
+
+                amountBond = newRow.insertCell(2);
+                newText = document.createTextNode(bonds[keysBonds[i]].amount);
+                amountBond.appendChild(newText);
+
+            }
+        }
+
+
+
+
+        /*****************************************
+         * SELECT AND TABLE/CHARTS : REAL ESTATE *
+         *****************************************/
+        if ({{ realestate|tojson }} != '{}') {
+
+            var bodyEstate = document.getElementById('table-estate');
+
+            var nameEstate;
+            var estValueEstate;
+            var origValueEstate;
+            var newRow;
+            var newText;
+
+
+            for (var i = 0; i < keysBonds.length; i++) {
+                newRow = bodyEstate.insertRow(bodyEstate.rows.length);
+
+                nameEstate = newRow.insertCell(0);
+                newText = document.createTextNode(keysEstate[i]);
+                nameEstate.appendChild(newText);
+
+                origValueEstate = newRow.insertCell(1);
+                newText = document.createTextNode(realestate[keysEstate[i]].original_value);
+                origValueEstate.appendChild(newText);
+
+
+                estValueEstate = newRow.insertCell(2);
+                newText = document.createTextNode(realestate[keysEstate[i]].estimated_value);
+                estValueEstate.appendChild(newText);
+
+            }
+        }
+
+
+
+
+        /*****************************************
+         * SELECT AND TABLE/CHARTS : DEBT *
+         *****************************************/
+        if ({{ debts|tojson }} != '{}') {
+
+            var bodyDebt = document.getElementById('table-debt');
+
+            var nameDebt;
+            var principalDebt;
+            var interestDebt;
+            var periodDebt;
+            var paymentDateDebt;
+            var newRow;
+            var newText;
+
+
+            for (var i = 0; i < keysDebts.length; i++) {
+                newRow = bodyDebt.insertRow(bodyDebt.rows.length);
+
+                nameDebt = newRow.insertCell(0);
+                newText = document.createTextNode(keysDebts[i]);
+                nameDebt.appendChild(newText);
+
+                principalDebt = newRow.insertCell(1);
+                newText = document.createTextNode(debts[keysDebts[i]].principal);
+                principalDebt.appendChild(newText);
+
+
+                interestDebt = newRow.insertCell(2);
+                newText = document.createTextNode(debts[keysDebts[i]].interest);
+                interestDebt.appendChild(newText);
+
+                periodDebt = newRow.insertCell(3);
+                newText = document.createTextNode(debts[keysDebts[i]].period);
+                periodDebt.appendChild(newText);
+
+                paymentDateDebt = newRow.insertCell(3);
+                newText = document.createTextNode(debts[keysDebts[i]].payment_date);
+                paymentDateDebt.appendChild(newText);
+
+            }
+        }
+
     </script>
        
     </body>

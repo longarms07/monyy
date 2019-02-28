@@ -344,31 +344,31 @@ def index():
 
     bonds = {
                 'Bond1' : {
-                            'maturity-date' : '2/14/2030',
+                            'maturity_date' : '2/14/2030',
                             'amount' : 1000.00
                 },
                 'Bond2' : {
-                            'maturity-date' : '3/12/2021',
+                            'maturity_date' : '3/12/2021',
                             'amount' : 500.00
                 },
                 'Bond3' : {
-                            'maturity-date' : '7/10/2025',
+                            'maturity_date' : '7/10/2025',
                             'amount' : 5000.00
                 }
                 # ... retrieve all
     }
     realestate = {
                     'add1' : {
-                                "estimated value" : 4382905,
-                                "current value" : 5438256
+                                'estimated_value' : 4382905,
+                                'original_value' : 5438256
                              },
                     'add2' : {
-                                "estimated value" : 4637586,
-                                "current value" : 8658556
+                                'estimated_value' : 4637586,
+                                'original_value' : 8658556
                              },
                     'add3' : {
-                                "estimated value" : 4876876,
-                                "current value" : 8769780
+                                'estimated_value' : 4876876,
+                                'original_value' : 8769780
                              },
     }
 
@@ -385,16 +385,16 @@ def index():
                                 'principal' : 240000,
                                 'interest' : 12.5,
                                 'period' : 'Monthly',
-                                'payment date' : 'Some payment date',
-                                'account associated' : 'Acct'
+                                'payment_date' : 'Some payment date',
+                                'account_associated' : 'Acct'
 
                           },
                 'debt3' : {
                                 'principal' : 240000,
                                 'interest' : 12.5,
                                 'period' : 'Monthly',
-                                'payment date' : 'Some payment date',
-                                'account associated' : 'Acct'
+                                'payment_date' : 'Some payment date',
+                                'account_associated' : 'Acct'
 
                           }
     }
