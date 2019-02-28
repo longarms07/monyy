@@ -131,6 +131,7 @@
             <!-----------
              POPUP FORMS
             ------------->
+            <button style="float:right;"><a href="/help" style="color:#1d1e22;font-size:25px" target="_blank">Help</a></button>
             <button style="float:right;"><a href="/logout" style="color:#1d1e22;font-size:25px">Logout</a></button>
 
             <!-- Add Bank Account -->
@@ -168,6 +169,9 @@
                 <form class="form-container" action="/index/banktrans" method='post' role='add_trans'>
 
                     <h1>Add Transaction</h1>
+
+                    <label for="digits"><b>Last 4 Digits of Desired Account</b></label>
+                    <input type="text" placeholder="0000" name="digits" id="form-cashtrans-acct" required>
 
                     <label for="name"><b>Transaction Name</b></label>
                     <input type="text" placeholder="Enter Transaction Name" name="name" id="form-cashtrans-name" required>
@@ -328,15 +332,16 @@
                     </tbody>
                 </table>
 
-                <button id="edit-cash" onclick="addCashAcctTransaction()">Add Transaction</button>
+                <button id="edit-cash" onclick="openPopUp('add-cash-trans-popup')">Add Transaction</button>
             </center>
 
             <br/>
 
+
             <!-- STOCKS -->
             <h2 id="stocks">Stocks</h2>
 
-            <select id="select-stocks">
+            <select id="select-stocks" onchange="changeStockView()">
             </select>
 
             <!-- Stocks summarized by a line graph -->
@@ -345,6 +350,18 @@
                 <div class="chart">
                     <canvas id="chart-stocks" width="800" height="500"></canvas>
                 </div>
+
+                <br/>
+
+                <table>
+                    <thead>
+                        <th>Number of Shares</th>
+                        <th>Cost per Share</th>
+                        <th>Total Value</th>
+                    </thead>
+                    <tbody id="table-stocks">
+                    </tbody>
+                </table>
 
                 <button id="edit-stocks">Edit</button>
             </center>
@@ -435,7 +452,7 @@
         /*
          * sort function
          */
-        function sortKeys(keyList, jsondata) {
+        function sortKeys(keyList, jsondata, comparison) {
                 var same = false;
                 var keyList;
                 var oldKeyList;
@@ -450,7 +467,7 @@
                         acct2 = jsondata[keyList[i]];
                         trans1Key = Object.keys(acct1)[0];
                         trans2Key = Object.keys(acct2)[0];
-                        if (acct2[trans2Key].balance < acct1[trans1Key].balance) {
+                        if (acct2[trans2Key][comparison] < acct1[trans1Key][comparison]) {
                             swapKeys(keyList, i + 1, i);
                         }
                     }
@@ -470,7 +487,7 @@
 
             // get account key values and sort in descending order by balance.
             var keysCash = Object.keys(cash);
-            sortKeys(keysCash, cash);
+            sortKeys(keysCash, cash, 'balance');
             
             // get 3 permanent buttons from sidebar & set
             button1Cash = document.getElementById('acct1');
@@ -549,7 +566,7 @@
 
             // get account key values and sort in descending order by balance.
             var keysStocks = Object.keys(stocks);
-            sortKeys(keysStocks, stocks);
+            sortKeys(keysStocks, stocks, 'total_value');
             
             // get 3 permanent buttons from sidebar & set
             button1Stocks = document.getElementById('stock1');
@@ -629,7 +646,7 @@
 
             // get account key values and sort in descending order by balance.
             var keysBonds = Object.keys(bonds);
-            sortKeys(keysBonds, bonds);
+            sortKeys(keysBonds, bonds, 'amount');
             
             // get 3 permanent buttons from sidebar & set
             button1Bonds = document.getElementById('bond1');
@@ -706,7 +723,7 @@
 
             // get account key values and sort in descending order by balance.
             var keysEstate = Object.keys(realestate);
-            sortKeys(keysEstate, realestate);
+            sortKeys(keysEstate, realestate, 'estimated_value');
             
             // get 3 permanent buttons from sidebar & set
             button1Estate = document.getElementById('realestate1');
@@ -779,14 +796,14 @@
 
 
 
-        /*************************
-         * SIDEBAR : REAL ESTATE *
-         *************************/
+        /*******************
+         * SIDEBAR : DEBTS *
+         *******************/
         if ({{ debts|tojson }} != '{}') {
 
             // get account key values and sort in descending order by balance.
             var keysDebts = Object.keys(debts);
-            // sortKeys(keysEstate, debts);
+            sortKeys(keysDebts, debts, 'remaining');
             
             // get 3 permanent buttons from sidebar & set
             button1Debts = document.getElementById('debt1');
@@ -902,6 +919,16 @@
         /**********************************
          * SELECT AND TABLE/CHARTS : CASH *
          **********************************/
+        /*
+         * When an account is selected from the sidebar,
+         * change the value in select and update table/graph to reflect changes.
+         */
+        function sideClickAcct(val) {
+            selectCash.value = val;
+            changeCashView();
+        }
+
+
         if ({{ cash|tojson }} != '{}') {
             // populate select dropdown with all accounts
             var selectCash = document.getElementById('select-cash');
@@ -951,16 +978,6 @@
                 newBody.id = 'table-cash';
             }
 
-
-            /*
-             * When an account is selected from the sidebar,
-             * change the value in select and update table/graph to reflect changes.
-             */
-            function sideClickAcct(val) {
-                selectCash.value = val;
-                changeCashView();
-            }
-
             // call to display default selected account
             changeCashView();
         }
@@ -968,7 +985,7 @@
 
 
 
-        /***********************************
+        /************************************
          * SELECT AND TABLE/CHARTS : STOCKS *
          ***********************************/
 
@@ -981,6 +998,78 @@
                 option.text = keysStocks[i];
                 selectStocks.add(option);
             }
+
+
+            /*
+             * Called every time a different account is selected.
+             * Populates table with data.
+             */
+            function changeStockView() {
+                selected = selectStocks.options[selectStocks.selectedIndex].value;
+
+                var newBody = document.createElement('tbody');
+                var oldBody;
+                var acct = stocks[selected];
+                var acctKeys = keysStocks;
+                closingValKeys = Array.from(Object.keys(acct.closing_values));
+                closingValValues = Array.from(Object.values(acct.closing_values));
+                var newRow;
+                var numShares;
+                var costPerShare;
+                var totalValue;
+                var newText;
+
+                newRow = newBody.insertRow(newBody.rows.length);
+
+                numShares = newRow.insertCell(0);
+                newText = document.createTextNode(acct.num_shares);
+                numShares.appendChild(newText);
+
+                costPerShare = newRow.insertCell(1);
+                newText = document.createTextNode(acct.cost_per_share);
+                costPerShare.appendChild(newText);
+
+                totalValue = newRow.insertCell(2);
+                newText = document.createTextNode(acct.total_value);
+                totalValue.appendChild(newText);
+
+                oldBody = document.getElementById('table-stocks');
+                oldBody.parentNode.replaceChild(newBody, oldBody);
+                newBody.id = 'table-stocks';
+
+                /*
+                 * STOCKS GRAPH
+                 */
+                // var stocks = new Chart(document.getElementById('chart-stocks').getContext('2d'), {
+                //     type: 'line',
+                //     options: {
+                //         title: {
+                //             display: true,
+                //             position: 'top',
+                //             fontSize: 20,
+                //             fontColor: "#373737",
+                //             padding: 10,
+                //             text: "Stock Closing Price"
+                //         },
+                //         legend: {
+                //             display: false
+                //         }
+                //     },
+                //     responsive: false,
+                //     maintainAspectRatio: true,
+                //     data: {
+                //         labels: ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'],
+                //         datasets: [{
+                //             data: [432.54, 567.45, 423.54, 333.45, 677.87,],
+                //         borderColor: "#1d1e22",
+                //         backgroundColor: "rgb(0,0,0,0)"
+                //         }]
+                //     }
+                // });
+            }
+
+            // call to display default selected account
+            changeStockView();
         }
 
 
@@ -1056,9 +1145,9 @@
 
 
 
-        /*****************************************
+        /**********************************
          * SELECT AND TABLE/CHARTS : DEBT *
-         *****************************************/
+         **********************************/
         if ({{ debts|tojson }} != '{}') {
 
             var bodyDebt = document.getElementById('table-debt');
