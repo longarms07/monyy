@@ -224,6 +224,26 @@
                 </form>
             </div>
 
+            <!-- Sell Stock -->
+                <form class="form-container" action="/index/stock" method='post' role='add_stock'>
+
+                    <h1>Add Stock</h1>
+
+                    <label for="symbol"><b>Symbol</b></label>
+                    <input type="text" placeholder="Enter Stock Symbol" name="symbol" id="form-stock-symbol" required>
+
+                    <label for="shares"><b>Number of Shares</b></label>
+                    <input type="text" placeholder="Enter Number of Shares" name="shares" id="form-stock-shares" required>
+
+                    <label for="value"><b>Initial Price</b></label>
+                    <input type="text" placeholder="Enter Initial Buying Price" name="value" id="form-stocks-price" required>
+
+                    <center>
+                        <button type="submit" onclick="post('/index/stock', 'add_stock')">Add</button>
+                        <button type="button" onclick="closePopUp('add-stock-popup')">Cancel</button>
+                    </center>
+                </form>
+
             <!-- Add Bond -->
             <div class="popup" id="add-bond-popup">
                 <form class="form-container" action="/index/bond" method='post' role='add_bond'>
