@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -115,8 +114,8 @@
         <!---------
             POPUPS
         ----------->
-        <div class="popup" id="add-cash-popup">
-            <form class="form-container" action="/index/bank" method='post' role='add_cash'>
+        <div class="add-cash-popup" id="add-cash-popup">
+            <form class="form-container" action="/index/bank" method='post' role='form'>
 
                 <h1>Add Bank Account</h1>
 
@@ -143,31 +142,6 @@
                 </center>
             </form>
         </div>
-
-        <div class="popup" id="add-cash-trans-popup">
-            <form class="form-container" action="/index/banktrans" method='post' role='add_trans'>
-
-            <h1>Add Transaction</h1>
-
-            <label for="trans-name"><b>Transaction Name</b></label>
-            <input type="text" placeholder="Enter Transaction Name" name="trans-name" id="form-cashtrans-name" required>
-
-            <label for="trans-date"><b>Transaction Date</b></label>
-            <input type="text" placeholder="Enter Transaction Date" name="trans-date" id="form-cashtrans-date" required>
-
-            <label for="trans-amount"><b>Amount</b></label>
-            <input type="text" placeholder="Enter Transaction Amount" name="trans-amount" id="form-cashtrans-amount" required>
-
-            <label for="trans-balance"><b>Balance</b></label>
-            <input type="text" placeholder="Enter Transaction Balance" name="trans-balance" id="form-cashtrans-balance" required>
-
-            <center>
-                <button type="submit" onclick="postCashAddTransaction()">Add</button>
-                <button type="button" onclick="closeCashAcctTransaction()">Cancel</button>
-            </center>
-
-        </div>
-
         <div class="add-stock-popup">
 
         </div>
@@ -227,7 +201,7 @@
                     </tbody>
                 </table>
 
-                <button id="edit-cash" onclick="addCashAcctTransaction()">Add Transaction</button>
+                <button id="edit-cash">Edit</button>
             </center>
 
             <br/>
@@ -273,6 +247,7 @@
             </center>
 
 <!--             <h2>Cryptocurrency</h2>
+
             <select>
                 <option value="crypto1">Crypto1</option>
                 <option value="crypto2">Crypto2</option>
@@ -302,33 +277,44 @@
         var bonds = JSON.parse({{bonds|tojson }});
         var realestate = JSON.parse({{realestate|tojson }});
         var debts = JSON.parse({{debts|tojson }});
+
         /**************
          * CASH SETUP *
          **************/
+
         /*
          * SIDEBAR
          */
+
         /*
          * Display top 3 accounts
          */
+
          if ({{ cash|tojson }} != '{}') {
+
             var cash =  JSON.parse({{ cash|tojson }});
+
             // get key values
             var keysCash = Object.keys(cash);
+
             // reorder from highest to lowest amount of cash
             var swapKeys = function(array, A, B) {
                 var temp = array[A];
                 array[A] = array[B];
                 array[B] = temp;
             }
+
+
                 var same = false;
                 var oldKeysCash;
                 var acct1;
                 var acct2;
                 var trans1Key;
                 var trans2Key;
+
                 while (same == false) {
                     oldKeysCash = keysCash;
+
                     for (var i = 0; i < keysCash.length - 1; i++) {
                         // console.log("sorting...")
                         acct1 = cash[keysCash[i+1]];
@@ -337,62 +323,87 @@
                         trans2Key = Object.keys(acct2)[0];
                         // console.log(acct1[trans1Key].balance);
                         // console.log(acct2[trans2Key].balance);
+
                         if (acct2[trans2Key].balance < acct1[trans1Key].balance) {
                             swapKeys(keysCash, i + 1, i);
                             // console.log("swapping...");
                         }
                     }
+
                     if (oldKeysCash == keysCash) {
                         same = true;
                         // console.log(keysCash);
+
                     }
                 }
+
             // get 3 permanent buttons from sidebar & set
             button1Cash = document.getElementById('acct1');
             button1Cash.innerText = keysCash[0];
             button1Cash.addEventListener('click', function(){sideClickAcct(button1Cash.innerHTML)});
+
             button2Cash = document.getElementById('acct2');
             button2Cash.innerText = keysCash[1];
             button2Cash.addEventListener('click', function(){sideClickAcct(button2Cash.innerHTML)});
+
             button3Cash = document.getElementById('acct3');
             button3Cash.innerText = keysCash[2];
             button3Cash.addEventListener('click', function(){sideClickAcct(button3Cash.innerHTML)});
+
+
             /*
              * View All Button
              */
             var collapse = false
             var extraCashAccts = [];
+
             function viewAllCash() {
+
                 var div = document.getElementById('list-cash');
                 buttonViewAll = document.getElementById('viewall-cash');
+
                 if (!collapse) {
                     console.log('viewAllCash');
+
                     var button;
                     var ahref;
+
                     for (var i = 3; i < keysCash.length; i++) {
                         // console.log('for-loop');
                         button = document.createElement('button');
                         button.innerHTML = keysCash[i];
                         button.addEventListener('click', function(){sideClickAcct(button.innerHTML)});
+
                         ahref = document.createElement('a');
                         ahref.href = '#cash';
                         ahref.appendChild(button);
+
                         div.append(ahref);
                         extraCashAccts.push(ahref);
                     }
+
                     collapse = true;
+
                     buttonViewAll.innerText = 'Collapse';
+
                     // console.log(extraCashAccts);
+
                 } else {
+
                     // console.log(extraCashAccts);
+
                     for (var i = 0; i < extraCashAccts.length; i++) {
                         extraCashAccts[i].parentNode.removeChild(extraCashAccts[i]);
                     }
+
                     extraCashAccts = [];
+
                     collapse = false;
+
                     buttonViewAll.innerText = 'View All';
                 }
             }
+
             /*
              * SELECT OPTIONS & FUNCTIONALITY
              */
@@ -403,38 +414,50 @@
                 option.text = keysCash[i];
                 selectCash.add(option);
             }
+
             function changeCashView() {
                 selected = selectCash.options[selectCash.selectedIndex].value;
+
                 var newBody = document.createElement('tbody');
+
                 var acct = cash[selected];
                 var acctKeys = Object.keys(acct);
+
                 var newRow;
                 var date;
                 var trans;
                 var amount;
                 var balance;
                 var newText;
+
                 for (var i = 0; i < acctKeys.length; i++) {
                     newRow = newBody.insertRow(newBody.rows.length);
+
                     date = newRow.insertCell(0);
                     newText = document.createTextNode(acct[acctKeys[i]].date);
                     date.appendChild(newText);
+
                     trans = newRow.insertCell(1);
                     newText = document.createTextNode(acct[acctKeys[i]].name);
                     trans.appendChild(newText);
+
                     amount = newRow.insertCell(2);
                     newText = document.createTextNode(acct[acctKeys[i]].amount);
                     amount.appendChild(newText);
+
                     balance = newRow.insertCell(3);
                     newText = document.createTextNode(acct[acctKeys[i]].balance);
                     balance.appendChild(newText);
                 }
+
                 oldBody = document.getElementById('table-cash');
                 oldBody.parentNode.replaceChild(newBody, oldBody);
                 newBody.id = 'table-cash';
             }
+
             // call to display default selected account
             changeCashView();
+
             function sideClickAcct(account) {
                 console.log('sideClickAcct');
                 selectCash.value = account;
@@ -446,47 +469,34 @@
         /*
          * Add Bank Account Button
          */
+
         function addBankAccount() {
             document.getElementById('add-cash-popup').style.display = "block";
         }
+
         function closeAddBankAccount() {
             document.getElementById('add-cash-popup').style.display = "none";
         }
+
         function postAddBankAcct() {
+            var bank = document.getElementById('form-cash-bank').value;
+            var name = document.getElementById('form-cash-name').value;
+            var acctNum = document.getElementById('form-cash-acct').value;
+            var balance = document.getElementById('form-cash-balance').value;
+
+            var data = {
+                            'bank' : bank,
+                            'name' : name,
+                            'number' : acctNum,
+                            'balance' : balance
+            };
+
             $(function() {
                 $('button').click(function() {
                     $.ajax({
                         url: '/index/bank',
                         headers: {'Content-Type': 'application/json'},
-                        data: $('add_cash').serialize(),
-                        type: 'POST',
-                        success: function(response) {
-                            console.log(response);
-                        },
-                        error: function(error) {
-                        }
-                    });
-                });
-            }
-            );
-        }
-
-        /*
-         * Add Transaction Button
-         */
-        function addCashAcctTransaction() {
-            document.getElementById('add-cash-trans-popup').style.display = "block";
-        }
-        function closeCashAcctTransaction() {
-            document.getElementById('add-cash-trans-popup').style.display = "none";
-        }
-        function postCashAddTransaction() {
-            $(function() {
-                $('button').click(function() {
-                    $.ajax({
-                        url: '/index/banktrans',
-                        headers: {'Content-Type': 'application/json'},
-                        data: $('add_trans').serialize(),
+                        data: $('form').serialize(),
                         type: 'POST',
                         success: function(response) {
                             console.log(response);
@@ -500,6 +510,9 @@
             }
             );
         }
+
+
+
     </script>
        
     </body>
