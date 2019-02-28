@@ -20,7 +20,7 @@ def hello():
     # db.session.query(Bond).delete()
     # db.session.query(Transaction_bond).delete()
     # db.session.query(Stock).delete()
-    # db.session.query(Stock_value).delete()
+    # #db.session.query(Stock_value).delete()
     # db.session.query(Transaction_stock).delete()
     # db.session.query(Debt).delete()
     # db.session.query(Transaction_debt).delete()
@@ -30,10 +30,11 @@ def hello():
     # db.session.query(Tag).delete()
     # db.session.query(Account_tag).delete()
     # db.session.commit()
-    #BAATest()
-    #BondTest()
-    #DebtTest()
-    #REATest()
+    # BAATest()
+    # BondTest()
+    # DebtTest()
+    # REATest()
+    # StockTest()
     if current_user.is_authenticated:
         return redirect("/index")
     else:
@@ -223,9 +224,9 @@ def index():
                 closing_vals[end] = val
                 on_day=on_day+1
             temp = {
-                'num_shares' : num_shares
-                'cost_per_share' :  cost_per_share
-                'total_value' : balance
+                'num_shares' : num_shares,
+                'cost_per_share' : cost_per_share,
+                'total_value' : balance,
                 'closing_values' : closing_vals
             }
             stocks[ex_trans.Stock.symbol] = temp
