@@ -119,19 +119,19 @@ class Transaction_bond(db.Model):
 
 class Stock(db.Model):
     stock_id = db.Column(db.Integer, primary_key=True)
-    symbol = db.Column(db.String, nullable=False)
+    stock_symbol = db.Column(db.String, nullable=False)
     exchange = db.Column(db.String, nullable=False)
     num_stocks = db.Column(db.Integer, nullable=False) #Starting number of stocks
     transactions_stock = db.relationship('Transaction_stock', backref=db.backref('Stock', uselist=False))
-    stock_ids = db.relationship('Stock_value', backref=db.backref('Stock', uselist=True))
+    # stock_ids = db.relationship('Stock_value', backref=db.backref('Stock', uselist=True))
     def __repr__(self):
-        return '<Stock %r>' % self.symbol
+        return '<Stock %r>' % self.stock_symbol
 
-class Stock_value(db.Model):
-    stock_value_id = db.Column(db.Float, primary_key=True)
-    stock_id = db.Column(db.Integer, db.ForeignKey(Stock.stock_id), nullable=False)
-    date = db.Column(db.Date, nullable=False, default=date.today())
-    value = db.Column(db.Integer, nullable=False)
+# class Stock_value(db.Model):
+#     stock_value_id = db.Column(db.Float, primary_key=True)
+#     stock_id = db.Column(db.Integer, db.ForeignKey(Stock.stock_id), nullable=False)
+#     date = db.Column(db.Date, nullable=False, default=date.today())
+#     value = db.Column(db.Integer, nullable=False)
 
 class Transaction_stock(db.Model):
     transaction_stock_id = db.Column(db.Integer, primary_key=True)
@@ -257,21 +257,21 @@ def database_test():
 
 
     #stock
-    stock_test = Stock(symbol='DIS',exchange='Dow Jones',num_stocks=500)
+    stock_test = Stock(stock_symbol='DIS',exchange='Dow Jones',num_stocks=500)
     # print(Stock.query.filter_by(exchange='Dow Jones').first())
     db.session.add(stock_test)
     db.session.commit()
-    # print(Stock.query.get(1))
+    print(Stock.query.get(1))
     stock_selected = Stock.query.filter_by(exchange='Dow Jones').first()
     # print(stock_selected.num_stocks)
 
-    stock_value_test = Stock_value(stock_id=stock_selected.stock_id, value=5)
-    # print(Stock_value.query.filter_by(stock_id=1).first())
-    db.session.add(stock_value_test)
-    db.session.commit()
-    # print(Stock_value.query.get(1))
-    stock_value_selected = Stock_value.query.filter_by(stock_id=1).first()
-    # print(stock_value_selected.date)
+    # stock_value_test = Stock_value(stock_id=stock_selected.stock_id, value=5)
+    # # print(Stock_value.query.filter_by(stock_id=1).first())
+    # db.session.add(stock_value_test)
+    # db.session.commit()
+    # # print(Stock_value.query.get(1))
+    # stock_value_selected = Stock_value.query.filter_by(stock_id=1).first()
+    # # print(stock_value_selected.date)
     
     stock_trans_test = Transaction_stock(transaction_id = transaction_selected_stock.transaction_id, stock_id= stock_selected.stock_id)
     # print(Transaction_stock.query.filter_by(stock_id=1).first())

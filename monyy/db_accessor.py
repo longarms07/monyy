@@ -5,12 +5,13 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
 from datetime import date
+from datetime import datetime
 from monyy import db
 from .database import *
 from .stocks import *
 
 #Check that the user actually owns this account
-def ownershipCheck(self,temp_user, temp_account):
+def ownershipCheck(temp_user, temp_account):
     #check that temp_user.id == temp_account.user_id
     #Raise an exception if not
     if not temp_user.user_id == temp_account.user_id:
@@ -465,8 +466,7 @@ class StockAccessor():
             ).order_by(Transaction.transaction_id.desc()
             ).join(Transaction_stock
             ).join(Stock
-            ).limi
-            (temp_limit
+            ).limit(temp_limit
             ).all()
         #Raise an exception if they have none
         if len(transactions) == 0:
@@ -474,15 +474,34 @@ class StockAccessor():
         #Return the list
         return transactions
 
-    def getValue(self, temp_stock, temp_datetime=datetime.today()):
-        #Get number of days
+    def getAllTransactions(self,temp_user, temp_account):
+        #Check that the account actually belongs to the user
+        try:
+            ownershipCheck(temp_user, temp_account)
+        except Exception as error: 
+            raise Exception(error)
+        #Make a query; joining account, transaction, bank account transaction, and bank account. Get the list of all
+        transactions = db.session.query(Account, Transaction, Transaction_stock, Stock
+            ).filter_by(account_id=temp_account.account_id
+            ).join(Transaction
+            ).order_by(Transaction.transaction_id.desc()
+            ).join(Transaction_stock
+            ).join(Stock).all()
+        #Raise an exception if they have none
+        if len(transactions) == 0:
+            raise Exception("This user has no transactions!")
+        #Return the list
+        return transactions
+
+    def getValue(self, temp_stock_symbol, temp_datetime=datetime.now()):
+        #Get number of Days
         try:
             if temp_datetime.date() != date.today():
                 days = (datetime.today()-temp_datetime).Days()
-                value = stockPriceOnDay(temp_stock.symbol, days)
+                value = stockPriceOnDay(temp_stock_symbol, days)
                 return value
             else:
-                value = returnStock(temp_stock.symbol)
+                value = returnStock(temp_stock_symbol)
                 return value
         except Exception as error:
             raise Exception("Could not get value!"+str(error))
@@ -491,8 +510,8 @@ class StockAccessor():
         #Return the int for the balance
         return int(query.balance)
 
-    def getNumStocks(self,temp_user, temp_account, temp_transaction, temp_datetime=datetime.today()):
-    #check that the account belongs to the user
+    def getNumStocks(self,temp_user, temp_account, temp_transaction, temp_datetime=datetime.now()):
+        #check that the account belongs to the user
         try:
             ownershipCheck(temp_user, temp_account)
         except Exception as error: 
@@ -509,9 +528,9 @@ class StockAccessor():
         return int(query.balance)
 
     #return how much we had in the stock, num of stocks * value
-    def getBalance(self,temp_user, temp_account, temp_transaction, temp_stock, temp_datetime=datetime.today()):
+    def getBalance(self,temp_user, temp_account, temp_transaction, temp_stock_symbol, temp_datetime=datetime.now()):
         try:
-            value = self.getValue(temp_stock, temp_datetime)
+            value = self.getValue(temp_stock_symbol, temp_datetime)
             num_stocks = self.getNumStocks(temp_user, temp_account, temp_transaction, temp_datetime)
             balance = value*num_stocks
             return balance
@@ -519,7 +538,7 @@ class StockAccessor():
             raise Exception(str(error))
 
     #Make a new account
-    def makeAccount(self,temp_user, temp_name, temp_num_stocks, temp_stock_symbol, temp_exchange='NASDAQ'):
+    def makeAccount(self,temp_user, temp_name, temp_num_stocks, temp_stock_symbol, source_account, temp_exchange='NASDAQ', temp_datetime=datetime.now()):
         #make sure that the stock symbol is valid
         try:
             returnStock(temp_stock_symbol)
@@ -539,38 +558,91 @@ class StockAccessor():
         #make a first transaction with same values referencing the account id
         try:
             new_transaction = Transaction(account_id=new_account.account_id, 
-                transaction_type='DEPOSIT', 
+                transaction_type='TRANSFER', 
                 transaction_value=temp_num_stocks, 
                 transaction_note="Opening account")
             db.session.add(new_transaction)
             db.session.commit()
             new_transaction = Transaction.query.filter_by(account_id=new_account.account_id
-                ).filter_by(transaction_type='DEPOSIT'
+                ).filter_by(transaction_type='TRANSFER'
                 ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making first transaction! "+str(error))
+        try:
+            if temp_num_stocks < 0:
+                temp_num_stocks = -temp_num_stocks
+            temp_value = -(self.getValue(temp_stock_symbol, temp_datetime)*temp_num_stocks)
+            BankAccountAccessor().makeTransaction(temp_user, source_account, "TRANSFER", temp_value, 'Buying Stocks', temp_date=temp_datetime.date())
+        except Exception as error:
+            raise Exception("Could not create account! Error making bank transaction! "+str(error))
         #make a bank account with the proper values
         try:
-            new_stock = Stock(symbol = temp_stock_symbol, exchange = temp_exchange, num_stocks = temp_num_stocks)
+            new_stock = Stock(stock_symbol=temp_stock_symbol, exchange=temp_exchange, num_stocks=temp_num_stocks)
             db.session.add(new_stock)
             db.session.commit()
-            new_stock = Bank_account.query.filter_by(symbol = temp_stock_symbol
+            new_stock = Stock.query.filter_by(stock_symbol = temp_stock_symbol
                 ).first()
         except Exception as error:
-            raise Exception("Could not create account! Error making stock account! "+str(error))
+            raise Exception("Could not create account! Error making Stock! "+str(error))
         #make a transaction ba with the transaction id
         try:
-            new_transaction_stock= Transaction_stock(transaction_id=new_transaction.transaction_id, bank_account_id=new_stock.stock_id)
+            new_transaction_stock= Transaction_stock(transaction_id=new_transaction.transaction_id, stock_id=new_stock.stock_id)
             db.session.add(new_transaction_stock)
             db.session.commit()
         except Exception as error:
             raise Exception("Could not create account! Error making transaction_stock! "+str(error))
 
-    def buyStocks(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits):
-        pass
+    def buyStocks(self,temp_user, source_account, dest_account,temp_stock_symbol, temp_num_stocks, temp_note, temp_datetime=datetime.today()):
+        if temp_num_stocks < 0:
+            temp_num_stocks = -temp_num_stocks
+        temp_value = -(self.getValue(temp_stock_symbol, temp_datetime)*temp_num_stocks)
+        try:
+            BankAccountAccessor().makeTransaction(temp_user, source_account, "TRANSFER", temp_value, temp_note, temp_date=temp_datetime.date())
+            self.makeTransaction(temp_user, dest_account, "TRANSFER", temp_num_stocks, temp_note, temp_date = temp_datetime.date())
+        except Exception as error:
+            raise Exception(error)
+            
+    def sellStocks(self,temp_user, source_account, dest_account,temp_stock_symbol, temp_num_stocks, temp_note, temp_datetime=datetime.today()):
+        if temp_num_stocks < 0:
+            temp_num_stocks = -temp_num_stocks
+        temp_value = (self.getValue(temp_stock_symbol, temp_datetime)*temp_num_stocks)
+        try:
+            BankAccountAccessor().makeTransaction(temp_user, source_account, "TRANSFER", temp_value, temp_note, temp_date=temp_datetime.date())
+            self.makeTransaction(temp_user, dest_account, "TRANSFER", -temp_num_stocks, temp_note, temp_date = temp_datetime.date())
+        except Exception as error:
+            raise Exception(error)
 
-    def sellStocks(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits):
-        pass
+    def makeTransaction(self,temp_user, temp_account, temp_type, temp_value, note, temp_date=date.today()):
+        try:
+            ownershipCheck(temp_user, temp_account)
+        except Exception as error: 
+            raise Exception(error)
+        #Find a prior transaction on this account, joining on transaction_ba.
+        query = db.session.query(Account, Transaction, Transaction_stock).filter_by(account_id=temp_account.account_id).join(Transaction).join(Transaction_stock).first()
+        #Get the Bank Account id from the Transaction BA
+        stock_id = query.Transaction_stock.stock_id
+        #Make a new transaction with the input information
+        try:
+            new_transaction = Transaction(account_id=temp_account.account_id, 
+                transaction_type=temp_type, 
+                transaction_value=temp_value, 
+                transaction_date=temp_date, 
+                transaction_note=note)
+            db.session.add(new_transaction)
+            db.session.commit()
+        except Exception as error:
+            raise Exception("Could not create transaction! " + str(error))
+        new_transaction = Transaction.query.filter_by(account_id=temp_account.account_id
+            ).filter_by(transaction_type=temp_type
+            ).filter_by(transaction_value=temp_value
+            ).filter_by(transaction_date=temp_date
+            ).first()
+        if new_transaction is None:
+            raise Exception("Error making new transaction!")
+        #Make a new Transaction BA with the bank account id
+        new_transaction_stock= Transaction_stock(transaction_id=new_transaction.transaction_id, stock_id=stock_id)
+        db.session.add(new_transaction_stock)
+        db.session.commit()
 
 
 class DebtAccessor():
@@ -832,7 +904,6 @@ class DebtAccessor():
             raise Exception("There is no debt with that id!")
         temp_debt.lender = temp_name
         db.session.commit() 
-
 
 class RealEstateAccessor():
     def getUserAccounts(self, temp_user):
@@ -1297,4 +1368,42 @@ def REATest():
         }
         realestate[re_name] = temp
     print(realestate)
+
+def StockTest():
+    baa = BankAccountAccessor()
+    sa = StockAccessor()
+    u = User(user_name='nfdjgbkdfjgkjbtfrkug', pass_hash = 'bfdjbvkjdbgvkjbdfkjgvbdfkjgvbkjf')
+    db.session.add(u)
+    db.session.commit()
+    #def makeAccount(temp_user, temp_name, temp_value, temp_bank_name, temp_digits):
+    baa.makeAccount(u, 'test four', 5, 'BB&T', 3335)
+    bank_accounts = baa.getUserAccounts(u)
+    a4 = bank_accounts[0]
+
+    sa.makeAccount(u, 'Disney', 50, 'DIS', a4)
+    sa.makeAccount(u, 'Apple', 500, 'AAPL', a4)
+    sa.makeAccount(u, 'Google', 5, 'GOOG', a4)
+    accounts = sa.getUserAccounts(u)
+    #assert(len(accounts)==3)
+    a1 = accounts[0]
+    a2 = accounts[1]
+    a3 = accounts[2]
+    
+    t = sa.getAllTransactions(u, a1)
+    print(t[0])
+    temp_stock = Stock.query.filter_by(stock_symbol='DIS').first()
+    stock_id = temp_stock.stock_id
+    #def makeDeposit(self,temp_user, temp_account, temp_value, temp_note, temp_date=date.today()):
+    sa.buyStocks(u, a4, a1, 'DIS', 500, 'ready for Infinity War')
+    sa.sellStocks(u, a4, a1, 'DIS', -400, 'done with Infinity War')
+    sa.buyStocks(u, a4, a1, 'DIS', 300, 'ready for Captain Marvel')
+
+    t = sa.getAllTransactions(u, a1)
+    #def getBalance(temp_user, temp_account, temp_transaction, temp_date=date.today()):
+    print(sa.getBalance(u,a1,t[0].Transaction, 'DIS'))
+    for trans in t:
+        print(trans.Transaction)
+        print(sa.getBalance(u,a1,trans.Transaction, 'DIS'))
+    #makeTransfer(self,temp_user, source_account, dest_account, temp_value, temp_note, temp_date=date.today()):
+
 

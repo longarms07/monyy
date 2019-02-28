@@ -11,7 +11,7 @@ import json
 @app.route("/")
 def hello():
     # db.drop_all()
-    # db.create_all()
+    db.create_all()
     # db.session.query(Account).delete()
     # db.session.query(User).delete()
     # db.session.query(Transaction).delete()
@@ -20,7 +20,7 @@ def hello():
     # db.session.query(Bond).delete()
     # db.session.query(Transaction_bond).delete()
     # db.session.query(Stock).delete()
-    # db.session.query(Stock_value).delete()
+    # # db.session.query(Stock_value).delete()
     # db.session.query(Transaction_stock).delete()
     # db.session.query(Debt).delete()
     # db.session.query(Transaction_debt).delete()
@@ -30,10 +30,12 @@ def hello():
     # db.session.query(Tag).delete()
     # db.session.query(Account_tag).delete()
     # db.session.commit()
-    #BAATest()
+    # BAATest()
     #BondTest()
     #DebtTest()
     #REATest()
+    # StockTest()
+    # database_test()
     if current_user.is_authenticated:
         return redirect("/index")
     else:
