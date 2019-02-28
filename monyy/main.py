@@ -209,85 +209,85 @@ def index():
     rampcount = 15
     networth = 532789236
     cash = {}
-    # cash = {
-    #             'acct1' : { 'ID0' : {
-    #                                     'name' : 'Walmart 1',
-    #                                     'date' : '2/14/2019',
-    #                                     'amount' : 54.21,
-    #                                     'balance' : 3000.77
-    #                                 },
-    #                         'ID1' : {
-    #                                     'name' : 'The nice men in NJ 1',
-    #                                     'date' : '2/12/2019',
-    #                                     'amount' : 2278.98,
-    #                                     'balance' : 34307.98
-    #                                 },
-    #                         'ID2' : {
-    #                                     'name' : 'Deposit 1',
-    #                                     'date' : '2/06/2019',
-    #                                     'amount' : 4000.00,
-    #                                     'balance': 36586.96
-    #                         }
-    #             },
+    cash = {
+                'acct1' : { 'ID0' : {
+                                        'name' : 'Walmart 1',
+                                        'date' : '2/14/2019',
+                                        'amount' : 54.21,
+                                        'balance' : 3000.77
+                                    },
+                            'ID1' : {
+                                        'name' : 'The nice men in NJ 1',
+                                        'date' : '2/12/2019',
+                                        'amount' : 2278.98,
+                                        'balance' : 34307.98
+                                    },
+                            'ID2' : {
+                                        'name' : 'Deposit 1',
+                                        'date' : '2/06/2019',
+                                        'amount' : 4000.00,
+                                        'balance': 36586.96
+                            }
+                },
                                 
-    #             'acct2' : { 'ID0' : {
-    #                                     'name' : 'Walmart 2',
-    #                                     'date' : '2/14/2019',
-    #                                     'amount' : 54.21,
-    #                                     'balance' : 5000.77
-    #                                 },
-    #                         'ID1' : {
-    #                                     'name' : 'The nice men in NJ 2',
-    #                                     'date' : '2/12/2019',
-    #                                     'amount' : 2278.98,
-    #                                     'balance' : 34307.98
-    #                                 },
-    #                         'ID2' : {
-    #                                     'name' : 'Deposit 2',
-    #                                     'date' : '2/06/2019',
-    #                                     'amount' : 4000.00,
-    #                                     'balance': 36586.96
-    #                         },
-    #             },
-    #             'acct3' : { 'ID0' : {
-    #                                     'name' : 'Walmart 3',
-    #                                     'date' : '2/14/2019',
-    #                                     'amount' : 54.21,
-    #                                     'balance' : 34253.77
-    #                                 },
-    #                         'ID1' : {
-    #                                     'name' : 'The nice men in NJ 3',
-    #                                     'date' : '2/12/2019',
-    #                                     'amount' : 2278.98,
-    #                                     'balance' : 34307.98
-    #                                 },
-    #                         'ID2' : {
-    #                                     'name' : 'Deposit 3',
-    #                                     'date' : '2/06/2019',
-    #                                     'amount' : 4000.00,
-    #                                     'balance': 36586.96
-    #                         }
-    #             },
-    #             'acct4' : { 'ID0' : {
-    #                                     'name' : 'Walmart 4',
-    #                                     'date' : '2/14/2019',
-    #                                     'amount' : 54.21,
-    #                                     'balance' : 34253.77
-    #                                 },
-    #                         'ID1' : {
-    #                                     'name' : 'The nice men in NJ 4',
-    #                                     'date' : '2/12/2019',
-    #                                     'amount' : 2278.98,
-    #                                     'balance' : 34307.98
-    #                                 },
-    #                         'ID2' : {
-    #                                     'name' : 'Deposit 4',
-    #                                     'date' : '2/06/2019',
-    #                                     'amount' : 4000.00,
-    #                                     'balance': 36586.96
-    #                         }
-    #             }
-    # }
+                'acct2' : { 'ID0' : {
+                                        'name' : 'Walmart 2',
+                                        'date' : '2/14/2019',
+                                        'amount' : 54.21,
+                                        'balance' : 5000.77
+                                    },
+                            'ID1' : {
+                                        'name' : 'The nice men in NJ 2',
+                                        'date' : '2/12/2019',
+                                        'amount' : 2278.98,
+                                        'balance' : 34307.98
+                                    },
+                            'ID2' : {
+                                        'name' : 'Deposit 2',
+                                        'date' : '2/06/2019',
+                                        'amount' : 4000.00,
+                                        'balance': 36586.96
+                            },
+                },
+                'acct3' : { 'ID0' : {
+                                        'name' : 'Walmart 3',
+                                        'date' : '2/14/2019',
+                                        'amount' : 54.21,
+                                        'balance' : 34253.77
+                                    },
+                            'ID1' : {
+                                        'name' : 'The nice men in NJ 3',
+                                        'date' : '2/12/2019',
+                                        'amount' : 2278.98,
+                                        'balance' : 34307.98
+                                    },
+                            'ID2' : {
+                                        'name' : 'Deposit 3',
+                                        'date' : '2/06/2019',
+                                        'amount' : 4000.00,
+                                        'balance': 36586.96
+                            }
+                },
+                'acct4' : { 'ID0' : {
+                                        'name' : 'Walmart 4',
+                                        'date' : '2/14/2019',
+                                        'amount' : 54.21,
+                                        'balance' : 34253.77
+                                    },
+                            'ID1' : {
+                                        'name' : 'The nice men in NJ 4',
+                                        'date' : '2/12/2019',
+                                        'amount' : 2278.98,
+                                        'balance' : 34307.98
+                                    },
+                            'ID2' : {
+                                        'name' : 'Deposit 4',
+                                        'date' : '2/06/2019',
+                                        'amount' : 4000.00,
+                                        'balance': 36586.96
+                            }
+                }
+    }
 
                 # ... retrieve all
     stocks = {
@@ -400,7 +400,7 @@ def index():
     }
 
     cash = json.dumps(cash)
-    stocks = json.dumps(cash)
+    stocks = json.dumps(stocks)
     bonds = json.dumps(bonds)
     realestate = json.dumps(realestate)
     debts = json.dumps(debts)
@@ -446,6 +446,83 @@ def addTransVals():
     balance = request.add_trans['balance']
 
     l = [name, date, amount, balance]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+@app.route("/index/stock", methods=['POST'])
+# @login_required
+def addStockVals():
+    # baa = BankAccountAccessor()
+    symbol = request.add_stock['symbol']
+    num_shares = request.add_stock['shares']
+    init_price = request.add_stock['value']
+
+    l = [symbol, num_shares, init_price]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+@app.route('/index/bond', methods=['POST'])
+# @login_required
+def addBondVals():
+    # baa = BankAccountAccessor()
+    name = request.add_bond['name']
+    value = request.add_bond['value']
+    mat_date = request.add_bond['date']
+
+    l = [name, value, mat_date]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+@app.route('/index/estate', methods=['POST'])
+# @login_required
+def addEstateVals():
+    # baa = BankAccountAccessor()
+    name = request.add_estate['name']
+    orig_value = request.add_estate['origvalue']
+    est_value = request.add_estate['estvalue']
+
+    l = [name, orig_value, est_value]
+    print(l)
+
+    # try:
+        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
+    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
+    # except Exception as error:
+    #     print(error)
+
+    return redirect("/index")
+
+@app.route('/index/debt', methods=['POST'])
+# @login_required
+def addDebtVals():
+    # baa = BankAccountAccessor()
+    name = request.add_debt['name']
+    prin = request.add_debt['principal']
+    inter = request.add_debt['interest']
+    per = request.add_debt['period']
+
+    l = [name, prin, inter, per]
     print(l)
 
     # try:

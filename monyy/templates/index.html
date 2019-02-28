@@ -38,7 +38,7 @@
             <center>
             <button type="button" id="viewall-cash" onclick="viewAllCash()" style="padding: 6px 8px 6px 0px;">View All</button>
             </center>
-            <button type="button" id="add-bankacct" onclick="addBankAccount()">+ Add Bank Account</button>
+            <button type="button" id="add-bankacct" onclick="openPopUp('add-cash-popup')">+ Add Bank Account</button>
             <br/>
 
 
@@ -46,13 +46,15 @@
             <a href="#stocks" class="sidebar-section">
                 <img src="../static/img/chart.png" alt="Stock Chart">
                  Stocks</a>
-            <button type="button" id="stock1"></button>
-            <button type="button" id="stock2"></button>
-            <button type="button" id="stock3"></button>
+            <div id="list-stocks">
+                <a href="#stocks"><button type="button" id="stock1"></button></a>
+                <a href="#stocks"><button type="button" id="stock2"></button></a>
+                <a href="#stocks"><button type="button" id="stock3"></button></a>
+            </div>
             <center>
-            <button type="button" id="viewall-stocks" style="padding: 6px 8px 6px 0px;">View All</button>
+            <button type="button" id="viewall-stocks" onclick="viewAllStocks()" style="padding: 6px 8px 6px 0px;">View All</button>
             </center>
-            <button type="button" id="add-stock">+ Add Stock</button>
+            <button type="button" onclick="openPopUp('add-stock-popup')" id="add-stock">+ Add Stock</button>
             <br/>
 
             <!-- BONDS -->
@@ -60,13 +62,13 @@
                 <img src="../static/img/bonds.png" alt="Bond"> 
                 Bonds
             </a>
-            <button type="button" id="bond1"></button>
-            <button type="button" id="bond2"></button>
-            <button type="button" id="bond3"></button>
+            <a href="#bonds"><button type="button" id="bond1"></button></a>
+            <a href="#bonds"><button type="button" id="bond2"></button></a>
+            <a href="#bonds"><button type="button" id="bond3"></button></a>
             <center>
-            <button type="button" id="viewall-bonds" style="padding: 6px 8px 6px 0px;">View All</button>
+            <button type="button" id="viewall-bonds" onclick="viewAllBonds()" style="padding: 6px 8px 6px 0px;">View All</button>
             </center>
-            <button type="button" id="add-bonds">+ Add Bond</button>
+            <button type="button" onclick="openPopUp('add-bond-popup')" id="add-bonds">+ Add Bond</button>
             <br/>
 
             <!-- REAL ESTATE -->
@@ -74,13 +76,15 @@
                 <img src="../static/img/realestate.png" alt="Real Estate"> 
                 Real Estate
             </a>
-            <button type="button" id="realestate1"></button>
-            <button type="button" id="realestate2"></button>
-            <button type="button" id="realestate3"></button>
+            <div id="list-realestate">
+                <a href="#realestate"><button type="button" id="realestate1"></button></a>
+                <a href="#realestate"><button type="button" id="realestate2"></button></a>
+                <a href="#realestate"><button type="button" id="realestate3"></button></a>
+            </div>
             <center>
-            <button type="button" id="viewall-estate" style="padding: 6px 8px 6px 0px;">View All</button>
+            <button type="button" id="viewall-estate" onclick="viewAllEstates()" style="padding: 6px 8px 6px 0px;">View All</button>
             </center>
-            <button type="button" id="add-estate">+ Add Real Estate</button>
+            <button type="button" onclick="openPopUp('add-realestate-popup')" id="add-estate">+ Add Real Estate</button>
             <br/>
 
             <!-- CRYPTOCURRENCY -->
@@ -101,94 +105,188 @@
             <a href="#debts" class="sidebar-section">
                 <img src="../static/img/debt.png" alt="Debt">
                  Debt</a>
-            <button type="button" id="debt1"></button>
-            <button type="button" id="debt2"></button>
-            <button type="button" id="debt3"></button>
+            <div id="list-debts">
+                <a href="#debts"><button type="button" id="debt1"></button></a>
+                <a href="#debts"><button type="button" id="debt2"></button></a>
+                <a href="#debts"><button type="button" id="debt3"></button></a>
+            </div>
             <center>
-            <button type="button" id="viewall-debt" style="padding: 6px 8px 6px 0px;">View All</button>
+            <button type="button" id="viewall-debt" onclick="viewAllDebts()" style="padding: 6px 8px 6px 0px;">View All</button>
             </center>
-            <button type="button" id="add-debt">+ Add Debt</button>
+            <button type="button" onclick="openPopUp('add-debt-popup')" id="add-debt">+ Add Debt</button>
             <br/>
             <br/>
         </div>
 
-        <!---------
-            POPUPS
-        ----------->
-        <div class="popup" id="add-cash-popup">
-            <form class="form-container" action="/index/bank" method='post' role='add_cash'>
-
-                <h1>Add Bank Account</h1>
-
-                <label for="bank"><b>Bank</b></label>
-                <input type="text" placeholder="Enter Bank" name="bank" id="form-cash-bank" required>
-
-                <label for="acct-name"><b>Account Name</b></label>
-                <input type="text" placeholder="Account Name" name="acct-name" id="form-cash-name" required>
-
-                <label for="account"><b>Account Number (last 4 digits)</b></label>
-                <input type="text" placeholder="Enter last 4 digits" name="account" id="form-cash-acct" required>
-
-                <br/>
-
-                <label for="balance"><b>Balance</b></label>
-                <input type="text" placeholder="Enter Balance" name="balance" id="form-cash-balance" required>
-
-                <br/>
-                <br/>
-
-                <center>
-                    <button type="submit" onclick="postAddBankAcct()">Add</button>
-                    <button type="button" onclick="closeAddBankAccount()">Cancel</button>
-                </center>
-            </form>
-        </div>
-
-        <div class="popup" id="add-cash-trans-popup">
-            <form class="form-container" action="/index/banktrans" method='post' role='add_trans'>
-
-            <h1>Add Transaction</h1>
-
-            <label for="trans-name"><b>Transaction Name</b></label>
-            <input type="text" placeholder="Enter Transaction Name" name="trans-name" id="form-cashtrans-name" required>
-
-            <label for="trans-date"><b>Transaction Date</b></label>
-            <input type="text" placeholder="Enter Transaction Date" name="trans-date" id="form-cashtrans-date" required>
-
-            <label for="trans-amount"><b>Amount</b></label>
-            <input type="text" placeholder="Enter Transaction Amount" name="trans-amount" id="form-cashtrans-amount" required>
-
-            <label for="trans-balance"><b>Balance</b></label>
-            <input type="text" placeholder="Enter Transaction Balance" name="trans-balance" id="form-cashtrans-balance" required>
-
-            <center>
-                <button type="submit" onclick="postCashAddTransaction()">Add</button>
-                <button type="button" onclick="closeCashAcctTransaction()">Cancel</button>
-            </center>
-
-        </div>
-
-        <div class="add-stock-popup">
-
-        </div>
-        <div class="add-bond-popup">
-
-        </div>
-        <div class="add-realestate-popup">
-
-        </div>
-        <div class="add-debt-popup">
-
-        </div>
 
 
 
-
-        <!---------------------
-            SUMMARY SECTIONS
-        ----------------------->
+        
         <div class="main">
 
+            <!------
+             LOGOUT
+            -------->
+
+            <!-----------
+             POPUP FORMS
+            ------------->
+            <button style="float:right;"><a href="/logout" style="color:#1d1e22;font-size:25px">Logout</a></button>
+
+            <!-- Add Bank Account -->
+            <div class="popup" id="add-cash-popup">
+                <form class="form-container" action="/index/bank" method='post' role='add_cash'>
+
+                    <h1>Add Bank Account</h1>
+
+                    <label for="bank"><b>Bank</b></label>
+                    <input type="text" placeholder="Enter Bank" name="bank" id="form-cash-bank" required>
+
+                    <label for="acct-name"><b>Account Name</b></label>
+                    <input type="text" placeholder="Account Name" name="acct-name" id="form-cash-name" required>
+
+                    <label for="account"><b>Account Number (last 4 digits)</b></label>
+                    <input type="text" placeholder="Enter last 4 digits" name="account" id="form-cash-acct" required>
+
+                    <br/>
+
+                    <label for="balance"><b>Balance</b></label>
+                    <input type="text" placeholder="Enter Balance" name="balance" id="form-cash-balance" required>
+
+                    <br/>
+                    <br/>
+
+                    <center>
+                        <button type="submit" onclick="post('/index/bank', 'add_cash')">Add</button>
+                        <button type="button" onclick="closePopUp('add-cash-popup')">Cancel</button>
+                    </center>
+                </form>
+            </div>
+
+            <!-- Add Transaction -->
+            <div class="popup" id="add-cash-trans-popup">
+                <form class="form-container" action="/index/banktrans" method='post' role='add_trans'>
+
+                    <h1>Add Transaction</h1>
+
+                    <label for="name"><b>Transaction Name</b></label>
+                    <input type="text" placeholder="Enter Transaction Name" name="name" id="form-cashtrans-name" required>
+
+                    <label for="date"><b>Transaction Date</b></label>
+                    <input type="text" placeholder="Enter Transaction Date" name="date" id="form-cashtrans-date" required>
+
+                    <label for="amount"><b>Amount</b></label>
+                    <input type="text" placeholder="Enter Transaction Amount" name="amount" id="form-cashtrans-amount" required>
+
+                    <label for="balance"><b>Balance</b></label>
+                    <input type="text" placeholder="Enter Transaction Balance" name="balance" id="form-cashtrans-balance" required>
+
+                    <center>
+                        <button type="submit" onclick="post('/index/banktrans', 'add_trans')">Add</button>
+                        <button type="button" onclick="closePopUp('add-cash-trans-popup')">Cancel</button>
+                    </center>
+                </form>
+            </div>
+
+            <!-- Add Stock -->
+            <div class="popup" id="add-stock-popup">
+                <form class="form-container" action="/index/stock" method='post' role='add_stock'>
+
+                    <h1>Add Stock</h1>
+
+                    <label for="symbol"><b>Symbol</b></label>
+                    <input type="text" placeholder="Enter Stock Symbol" name="symbol" id="form-stock-symbol" required>
+
+                    <label for="shares"><b>Number of Shares</b></label>
+                    <input type="text" placeholder="Enter Number of Shares" name="shares" id="form-stock-shares" required>
+
+                    <label for="value"><b>Initial Price</b></label>
+                    <input type="text" placeholder="Enter Initial Buying Price" name="value" id="form-stocks-price" required>
+
+                    <center>
+                        <button type="submit" onclick="post('/index/stock', 'add_stock')">Add</button>
+                        <button type="button" onclick="closePopUp('add-stock-popup')">Cancel</button>
+                    </center>
+                </form>
+            </div>
+
+            <!-- Add Bond -->
+            <div class="popup" id="add-bond-popup">
+                <form class="form-container" action="/index/bond" method='post' role='add_bond'>
+
+                    <h1>Add Bond</h1>
+
+                    <label for="name"><b>Name</b></label>
+                    <input type="text" placeholder="Enter Bond Name" name="name" id="form-bond-name" required>
+
+                    <label for="value"><b>Value</b></label>
+                    <input type="text" placeholder="Enter Bond Value" name="value" id="form-bond-value" required>
+
+                    <label for="date"><b>Maturation Date</b></label>
+                    <input type="text" placeholder="MM/DD/YYYY" name="date" id="form-bond-date" required>
+
+                    <center>
+                        <button type="submit" onclick="post('/index/bond', 'add_bond')">Add</button>
+                        <button type="button" onclick="closePopUp('add-bond-popup')">Cancel</button>
+                    </center>
+                </form>
+            </div>
+
+            <!-- Add Real Estate -->
+            <div class="popup" id="add-realestate-popup">
+                <form class="form-container" action="/index/estate" method='post' role='add_estate'>
+
+                    <h1>Add Real Estate</h1>
+
+                    <label for="name"><b>Name</b></label>
+                    <input type="text" placeholder="Enter Estate Name" name="name" id="form-estate-name" required>
+
+                    <label for="origvalue"><b>Original Value</b></label>
+                    <input type="text" placeholder="Enter Original Value" name="origvalue" id="form-estate-origvalue" required>
+
+                    <label for="estvalue"><b>Estimated Current Value</b></label>
+                    <input type="text" placeholder="Enter Estimated Value" name="estvalue" id="form-estate-estvalue" required>
+
+                    <center>
+                        <button type="submit" onclick="postCashAddTransaction()">Add</button>
+                        <button type="button" onclick="closePopUp('add-realestate-popup')">Cancel</button>
+                    </center>
+                </form>
+            </div>
+
+            <!-- Add Debt -->
+            <div class="popup" id="add-debt-popup">
+                <form class="form-container" action="/index/debt" method='post' role='add_debt'>
+
+                    <h1>Add Real Debt</h1>
+
+                    <label for="name"><b>Name/Lender</b></label>
+                    <input type="text" placeholder="Enter Lender" name="name" id="form-debt-name" required>
+
+                    <label for="principal"><b>Initial Debt Value</b></label>
+                    <input type="text" placeholder="Enter Debt Value" name="principal" id="form-debt-principal" required>
+
+                    <label for="interest"><b>Interest</b></label>
+                    <input type="text" placeholder="Enter Interest (%)" name="interest" id="form-debt-interest" required>
+
+                    <label for="period"><b>Pay Period</b></label>
+                    <input type="text" placeholder="Enter Pay Period" name="period" id="form-debt-period" required>
+
+                    <!--
+                    <label for="debt-acct"><b>Account Associated</b></label>
+                    <input type="text" placeholder="Enter Last 4 Digits of Valid Account" name="debt-acct" id="form-debt-acct" required>
+                    -->
+
+                    <center>
+                        <button type="submit" onclick="post('/index/debt', 'add_debt')">Add</button>
+                        <button type="button" onclick="closePopUp('add-debt-popup')">Cancel</button>
+                    </center>
+                </form>
+            </div>
+
+            <!---------------------
+                SUMMARY SECTIONS
+            ----------------------->
             <h2>Welcome, {{username}}.</h2>
 
             <div class="display-countworth">
@@ -233,7 +331,7 @@
             <br/>
 
             <!-- STOCKS -->
-            <h2>Stocks</h2>
+            <h2 id="stocks">Stocks</h2>
 
             <select id="select-stocks">
             </select>
@@ -251,7 +349,7 @@
             <br/>
 
             <!-- BONDS -->
-            <h2>Bonds</h2>
+            <h2 id="bonds">Bonds</h2>
 
             <center>
                 <table>
@@ -296,57 +394,62 @@
 
     <script src="../static/js/monyy-script.js"></script>
     <script>
-        //console.log({{cash}});
+        
+        // get info for all sections
         var cash =  JSON.parse({{ cash|tojson }});
         var stocks = JSON.parse({{stocks|tojson }});
         var bonds = JSON.parse({{bonds|tojson }});
         var realestate = JSON.parse({{realestate|tojson }});
         var debts = JSON.parse({{debts|tojson }});
-        /**************
-         * CASH SETUP *
-         **************/
+
         /*
-         * SIDEBAR
+         * helper function for sorting
          */
-        /*
-         * Display top 3 accounts
-         */
-         if ({{ cash|tojson }} != '{}') {
-            var cash =  JSON.parse({{ cash|tojson }});
-            // get key values
-            var keysCash = Object.keys(cash);
-            // reorder from highest to lowest amount of cash
-            var swapKeys = function(array, A, B) {
+        var swapKeys = function(array, A, B) {
                 var temp = array[A];
                 array[A] = array[B];
                 array[B] = temp;
             }
+        /*
+         * sort function
+         */
+        var sortKeys = function(keyList, jsondata) {
                 var same = false;
-                var oldKeysCash;
+                var keyList;
+                var oldKeyList;
                 var acct1;
                 var acct2;
                 var trans1Key;
                 var trans2Key;
                 while (same == false) {
-                    oldKeysCash = keysCash;
-                    for (var i = 0; i < keysCash.length - 1; i++) {
-                        // console.log("sorting...")
-                        acct1 = cash[keysCash[i+1]];
-                        acct2 = cash[keysCash[i]];
+                    oldKeyList = keyList;
+                    for (var i = 0; i < keyList.length - 1; i++) {
+                        acct1 = jsondata[keyList[i+1]];
+                        acct2 = jsondata[keyList[i]];
                         trans1Key = Object.keys(acct1)[0];
                         trans2Key = Object.keys(acct2)[0];
-                        // console.log(acct1[trans1Key].balance);
-                        // console.log(acct2[trans2Key].balance);
                         if (acct2[trans2Key].balance < acct1[trans1Key].balance) {
-                            swapKeys(keysCash, i + 1, i);
-                            // console.log("swapping...");
+                            swapKeys(keyList, i + 1, i);
                         }
                     }
-                    if (oldKeysCash == keysCash) {
+                    if (oldKeyList == keyList) {
                         same = true;
-                        // console.log(keysCash);
                     }
                 }
+            }
+
+
+
+
+        /******************
+         * SIDEBAR : CASH *
+         ******************/
+        if ({{ cash|tojson }} != '{}') {
+
+            // get account key values and sort in descending order by balance.
+            var keysCash = Object.keys(cash);
+            sortKeys(keysCash, cash);
+            
             // get 3 permanent buttons from sidebar & set
             button1Cash = document.getElementById('acct1');
             button1Cash.innerText = keysCash[0];
@@ -360,39 +463,384 @@
             /*
              * View All Button
              */
-            var collapse = false
+            // boolean to keep track when to view all and when to collapse
+            var collapseCash = false
             var extraCashAccts = [];
+
             function viewAllCash() {
-                var div = document.getElementById('list-cash');
-                buttonViewAll = document.getElementById('viewall-cash');
-                if (!collapse) {
-                    console.log('viewAllCash');
+
+                // get view all button
+                buttonViewAllCash = document.getElementById('viewall-cash');
+
+                var divCash = document.getElementById('list-cash')
+
+                // if the list is not collapsed, proceed with all view all functionality
+                if (!collapseCash) {
                     var button;
                     var ahref;
+
+                    // iterate through rest of list and display
                     for (var i = 3; i < keysCash.length; i++) {
-                        // console.log('for-loop');
+
                         button = document.createElement('button');
                         button.innerHTML = keysCash[i];
-                        button.addEventListener('click', function(){sideClickAcct(button.innerHTML)});
+
+                        button.addEventListener('click', function(){
+                                sideClickAcct(button.innerHTML)
+                            });
+                        
                         ahref = document.createElement('a');
                         ahref.href = '#cash';
                         ahref.appendChild(button);
-                        div.append(ahref);
+                        divCash.append(ahref);
                         extraCashAccts.push(ahref);
                     }
-                    collapse = true;
-                    buttonViewAll.innerText = 'Collapse';
-                    // console.log(extraCashAccts);
-                } else {
-                    // console.log(extraCashAccts);
+
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseCash = true;
+                    // set button text to 'Collapse'
+                    buttonViewAllCash.innerText = 'Collapse';
+                } 
+                // else if the list is collapsed
+                else {
+                    // undisplay rest of list
                     for (var i = 0; i < extraCashAccts.length; i++) {
                         extraCashAccts[i].parentNode.removeChild(extraCashAccts[i]);
                     }
+                    // reset account list
                     extraCashAccts = [];
-                    collapse = false;
-                    buttonViewAll.innerText = 'View All';
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseCash = false;
+                    //set button text to 'View All'
+                    buttonViewAllCash.innerText = 'View All';
                 }
             }
+        }
+
+
+
+
+        /********************
+         * SIDEBAR : STOCKS *
+         ********************/
+        if ({{ stocks|tojson }} != '{}') {
+
+            // get account key values and sort in descending order by balance.
+            var keysStocks = Object.keys(stocks);
+            sortKeys(keysStocks, stocks);
+            
+            // get 3 permanent buttons from sidebar & set
+            button1Stocks = document.getElementById('stock1');
+            button1Stocks.innerText = keysStocks[0];
+            button1Stocks.addEventListener('click', function(){sideClickAcct(button1Stocks.innerHTML)});
+            button2Stocks = document.getElementById('stock2');
+            button2Stocks.innerText = keysStocks[1];
+            button2Stocks.addEventListener('click', function(){sideClickAcct(button2Stocks.innerHTML)});
+            button3Stocks = document.getElementById('stock3');
+            button3Stocks.innerText = keysStocks[2];
+            button3Stocks.addEventListener('click', function(){sideClickAcct(button3Stocks.innerHTML)});
+
+            /*
+             * View All Button
+             */
+            // boolean to keep track when to view all and when to collapse
+            var collapseStocks = false
+            var extraStocks = [];
+
+            function viewAllStocks() {
+
+                // get view all button
+                buttonViewAllStocks = document.getElementById('viewall-stocks');
+
+                var divStocks = document.getElementById('list-stocks');
+
+                // if the list is not collapsed, proceed with all view all functionality
+                if (!collapseStocks) {
+                    var button;
+                    var ahref;
+
+                    // iterate through rest of list and display
+                    for (var i = 3; i < keysStocks.length; i++) {
+
+                        button = document.createElement('button');
+                        button.innerHTML = keysStocks[i];
+
+                        button.addEventListener('click', function(){
+                                sideClickAcct(button.innerHTML)
+                            });
+                        
+                        ahref = document.createElement('a');
+                        ahref.href = '#stocks';
+                        ahref.appendChild(button);
+                        divStocks.append(ahref);
+                        extraStocks.push(ahref);
+                    }
+
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseStocks = true;
+                    // set button text to 'Collapse'
+                    buttonViewAllStocks.innerText = 'Collapse';
+                } 
+                // else if the list is collapsed
+                else {
+                    // undisplay rest of list
+                    for (var i = 0; i < extraStocks.length; i++) {
+                        extraStocks[i].parentNode.removeChild(extraStocks[i]);
+                    }
+                    // reset account list
+                    extraStocks = [];
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseStocks = false;
+                    //set button text to 'View All'
+                    buttonViewAllStocks.innerText = 'View All';
+                }
+            }
+        }
+
+
+
+
+        /*******************
+         * SIDEBAR : BONDS *
+         *******************/
+        if ({{ bonds|tojson }} != '{}') {
+
+            // get account key values and sort in descending order by balance.
+            var keysBonds = Object.keys(bonds);
+            sortKeys(keysBonds, bonds);
+            
+            // get 3 permanent buttons from sidebar & set
+            button1Bonds = document.getElementById('bond1');
+            button1Bonds.innerText = keysBonds[0];
+            button1Bonds.addEventListener('click', function(){sideClickAcct(button1Bonds.innerHTML)});
+            button2Bonds = document.getElementById('bond2');
+            button2Bonds.innerText = keysBonds[1];
+            button2Bonds.addEventListener('click', function(){sideClickAcct(button2Bonds.innerHTML)});
+            button3Bonds = document.getElementById('bond3');
+            button3Bonds.innerText = keysBonds[2];
+            button3Bonds.addEventListener('click', function(){sideClickAcct(button3Bonds.innerHTML)});
+
+            /*
+             * View All Button
+             */
+            // boolean to keep track when to view all and when to collapse
+            var collapseBonds = false
+            var extraBonds = [];
+
+            function viewAllBonds() {
+
+                // get view all button
+                buttonViewAllBonds = document.getElementById('viewall-bonds');
+
+                var divBonds = document.getElementById('list-bonds');
+
+                // if the list is not collapsed, proceed with all view all functionality
+                if (!collapseBonds) {
+                    var button;
+                    var ahref;
+
+                    // iterate through rest of list and display
+                    for (var i = 3; i < keysBonds.length; i++) {
+
+                        button = document.createElement('button');
+                        button.innerHTML = keysBonds[i];
+
+                        button.addEventListener('click', function(){
+                                sideClickAcct(button.innerHTML)
+                            });
+                        
+                        ahref = document.createElement('a');
+                        ahref.href = '#cash';
+                        ahref.appendChild(button);
+                        divBonds.append(ahref);
+                        extraBonds.push(ahref);
+                    }
+
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseBonds = true;
+                    // set button text to 'Collapse'
+                    buttonViewAllBonds.innerText = 'Collapse';
+                } 
+                // else if the list is collapsed
+                else {
+                    // undisplay rest of list
+                    for (var i = 0; i < extraBonds.length; i++) {
+                        extraBonds[i].parentNode.removeChild(extraBonds[i]);
+                    }
+                    // reset account list
+                    extraBonds = [];
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseBonds = false;
+                    //set button text to 'View All'
+                    buttonViewAllBonds.innerText = 'View All';
+                }
+            }
+        }
+
+
+
+
+        /*************************
+         * SIDEBAR : REAL ESTATE *
+         *************************/
+        if ({{ realestate|tojson }} != '{}') {
+
+            // get account key values and sort in descending order by balance.
+            var keysEstate = Object.keys(realestate);
+            sortKeys(keysEstate, realestate);
+            
+            // get 3 permanent buttons from sidebar & set
+            button1Estate = document.getElementById('realestate1');
+            button1Estate.innerText = keysEstate[0];
+            button1Estate.addEventListener('click', function(){sideClickAcct(button1Estate.innerHTML)});
+            button2Estate = document.getElementById('realestate2');
+            button2Estate.innerText = keysEstate[1];
+            button2Estate.addEventListener('click', function(){sideClickAcct(button2Estate.innerHTML)});
+            button3Estate = document.getElementById('realestate3');
+            button3Estate.innerText = keysEstate[2];
+            button3Estate.addEventListener('click', function(){sideClickAcct(button3Estate.innerHTML)});
+
+            /*
+             * View All Button
+             */
+            // boolean to keep track when to view all and when to collapse
+            var collapseEstates = false
+            var extraEstates = [];
+
+            function viewAllEstates() {
+
+                // get view all button
+                buttonViewAllEstates = document.getElementById('viewall-estate');
+
+                var divEstates = document.getElementById('list-realestate');
+
+                // if the list is not collapsed, proceed with all view all functionality
+                if (!collapseEstates) {
+                    var button;
+                    var ahref;
+
+                    // iterate through rest of list and display
+                    for (var i = 3; i < keysEstate.length; i++) {
+
+                        button = document.createElement('button');
+                        button.innerHTML = keysEstate[i];
+
+                        button.addEventListener('click', function(){
+                                sideClickAcct(button.innerHTML)
+                            });
+                        
+                        ahref = document.createElement('a');
+                        ahref.href = '#realestate';
+                        ahref.appendChild(button);
+                        divEstates.append(ahref);
+                        extraEstates.push(ahref);
+                    }
+
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseEstates = true;
+                    // set button text to 'Collapse'
+                    buttonViewAllEstates.innerText = 'Collapse';
+                } 
+                // else if the list is collapsed
+                else {
+                    // undisplay rest of list
+                    for (var i = 0; i < extraDebts.length; i++) {
+                        extraEstates[i].parentNode.removeChild(extraEstates[i]);
+                    }
+                    // reset account list
+                    extraEstates = [];
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseEstates = false;
+                    //set button text to 'View All'
+                    buttonViewAllEstates.innerText = 'View All';
+                }
+            }
+        }
+
+
+
+
+        /*************************
+         * SIDEBAR : REAL ESTATE *
+         *************************/
+        if ({{ debts|tojson }} != '{}') {
+
+            // get account key values and sort in descending order by balance.
+            var keysDebts = Object.keys(debts);
+            // sortKeys(keysEstate, debts);
+            
+            // get 3 permanent buttons from sidebar & set
+            button1Debts = document.getElementById('debt1');
+            button1Debts.innerText = keysDebts[0];
+            button1Debts.addEventListener('click', function(){sideClickAcct(button1Debts.innerHTML)});
+            button2Debts = document.getElementById('debt2');
+            button2Debts.innerText = keysDebts[1];
+            button2Debts.addEventListener('click', function(){sideClickAcct(button2Debts.innerHTML)});
+            button3Debts = document.getElementById('debt3');
+            button3Debts.innerText = keysDebts[2];
+            button3Debts.addEventListener('click', function(){sideClickAcct(button3Debts.innerHTML)});
+
+            /*
+             * View All Button
+             */
+            // boolean to keep track when to view all and when to collapse
+            var collapseDebts = false
+            var extraDebts = [];
+
+            function viewAllDebts() {
+
+                // get view all button
+                buttonViewAllDebts = document.getElementById('viewall-debt');
+
+                var divDebts = document.getElementById('list-debts');
+
+                // if the list is not collapsed, proceed with all view all functionality
+                if (!collapseDebts) {
+                    var button;
+                    var ahref;
+
+                    // iterate through rest of list and display
+                    for (var i = 3; i < keysDebts.length; i++) {
+
+                        button = document.createElement('button');
+                        button.innerHTML = keysDebts[i];
+
+                        button.addEventListener('click', function(){
+                                sideClickAcct(button.innerHTML)
+                            });
+                        
+                        ahref = document.createElement('a');
+                        ahref.href = '#debts';
+                        ahref.appendChild(button);
+                        divDebts.append(ahref);
+                        extraDebts.push(ahref);
+                    }
+
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseDebts = true;
+                    // set button text to 'Collapse'
+                    buttonViewAllDebts.innerText = 'Collapse';
+                } 
+                // else if the list is collapsed
+                else {
+                    // undisplay rest of list
+                    for (var i = 0; i < extraDebts.length; i++) {
+                        extraDebts[i].parentNode.removeChild(extraDebts[i]);
+                    }
+                    // reset account list
+                    extraDebts = [];
+                    // handles decision for expanding/contracting side menu bar list
+                    collapseDebts = false;
+                    //set button text to 'View All'
+                    buttonViewAllDebts.innerText = 'View All';
+                }
+            }
+        }
+
+
+
+
+
             /*
              * SELECT OPTIONS & FUNCTIONALITY
              */
@@ -435,35 +883,28 @@
             }
             // call to display default selected account
             changeCashView();
-            function sideClickAcct(account) {
-                console.log('sideClickAcct');
-                selectCash.value = account;
+            function sideClickAcct(selectList, val) {
+                selectList.value = val;
                 changeCashView();
             }
-        }
-
 
         /*
-         * Add Bank Account Button
+         * POST FUNCTION
          */
-        function addBankAccount() {
-            document.getElementById('add-cash-popup').style.display = "block";
-        }
-        function closeAddBankAccount() {
-            document.getElementById('add-cash-popup').style.display = "none";
-        }
-        function postAddBankAcct() {
+        function post(url, role) {
             $(function() {
                 $('button').click(function() {
                     $.ajax({
-                        url: '/index/bank',
+                        url: url,
                         headers: {'Content-Type': 'application/json'},
-                        data: $('add_cash').serialize(),
+                        data: $(role).serialize(),
                         type: 'POST',
                         success: function(response) {
                             console.log(response);
                         },
                         error: function(error) {
+                            console.log(response);
+                            console.log(error);
                         }
                     });
                 });
@@ -474,11 +915,11 @@
         /*
          * Add Transaction Button
          */
-        function addCashAcctTransaction() {
-            document.getElementById('add-cash-trans-popup').style.display = "block";
+        function openPopUp(id) {
+            document.getElementById(id).style.display = "block";
         }
-        function closeCashAcctTransaction() {
-            document.getElementById('add-cash-trans-popup').style.display = "none";
+        function closePopUp(id) {
+            document.getElementById(id).style.display = "none";
         }
         function postCashAddTransaction() {
             $(function() {
