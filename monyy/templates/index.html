@@ -211,6 +211,9 @@
                     <label for="shares"><b>Number of Shares</b></label>
                     <input type="text" placeholder="Enter Number of Shares" name="shares" id="form-stock-shares" required>
 
+                    <label for="digits"><b>Last 4 Digits of Account to Deduct From</b></label>
+                    <input type="text" placeholder="####" name="digits" id="form-stock-shares" required>
+
                     <center>
                         <button type="submit" onclick="post('/index/stock', 'add_stock')">Add</button>
                         <button type="button" onclick="closePopUp('add-stock-popup')">Cancel</button>
@@ -219,7 +222,7 @@
             </div>
 
             <!-- Sell Stock -->
-                <form class="form-container" action="/index/sell-stock" method='post' role='sell_stock'>
+                <!-- <form class="form-container" action="/index/sell-stock" method='post' role='sell_stock'>
 
                     <h1>Sell Stock</h1>
 
@@ -236,7 +239,7 @@
                         <button type="submit" onclick="post('/index/stock', 'add_stock')">Add</button>
                         <button type="button" onclick="closePopUp('add-stock-popup')">Cancel</button>
                     </center>
-                </form>
+                </form> -->
 
             <!-- Add Bond -->
             <div class="popup" id="add-bond-popup">
@@ -250,8 +253,14 @@
                     <label for="value"><b>Value</b></label>
                     <input type="text" placeholder="Enter Bond Value" name="value" id="form-bond-value" required>
 
-                    <label for="date"><b>Maturation Date</b></label>
-                    <input type="text" placeholder="MM/DD/YYYY" name="date" id="form-bond-date" required>
+                    <label for="day"><b>Maturation Day</b></label>
+                    <input type="text" placeholder="DD" name="day" id="form-bond-day" required>
+
+                    <label for="month"><b>Maturation Month</b></label>
+                    <input type=text" placeholder="MM" name="month" id="form-bond-month" required>
+
+                    <label for="year"><b>Maturation Year</b></label>
+                    <input type="text" placeholder="YYYY" name="year" id="form-bond-year" required>
 
                     <center>
                         <button type="submit" onclick="post('/index/bond', 'add_bond')">Add</button>
