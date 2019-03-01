@@ -31,9 +31,9 @@
 //     }
 // });
 
-// /*
-//  * STOCKS GRAPH
-//  */
+/*
+ * STOCKS GRAPH
+ */
 // var stocks = new Chart(document.getElementById('chart-stocks').getContext('2d'), {
 //     type: 'line',
 //     options: {
