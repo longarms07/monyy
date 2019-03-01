@@ -540,6 +540,7 @@ def addDebtVals():
     prin = request.add_debt['principal']
     inter = request.add_debt['interest']
     per = request.add_debt['period']
+    digtis = request.add_debt['digits']
 
     l = [name, prin, inter, per]
     print(l)

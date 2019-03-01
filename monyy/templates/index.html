@@ -257,7 +257,7 @@
                     <input type="text" placeholder="DD" name="day" id="form-bond-day" required>
 
                     <label for="month"><b>Maturation Month</b></label>
-                    <input type=text" placeholder="MM" name="month" id="form-bond-month" required>
+                    <input type="text" placeholder="MM" name="month" id="form-bond-month" required>
 
                     <label for="year"><b>Maturation Year</b></label>
                     <input type="text" placeholder="YYYY" name="year" id="form-bond-year" required>
@@ -309,10 +309,10 @@
                     <label for="period"><b>Pay Period</b></label>
                     <input type="text" placeholder="Enter Pay Period" name="period" id="form-debt-period" required>
 
-                    <!--
+                    
                     <label for="debt-acct"><b>Account Associated</b></label>
                     <input type="text" placeholder="Enter Last 4 Digits of Valid Account" name="debt-acct" id="form-debt-acct" required>
-                    -->
+                    
 
                     <center>
                         <button type="submit" onclick="post('/index/debt', 'add_debt')">Add</button>
@@ -380,9 +380,6 @@
             <!-- Stocks summarized by a line graph -->
             <center>
                 <h2 id="stock-current"></h2>
-                <div class="chart">
-                    <canvas id="chart-stocks" width="800" height="500"></canvas>
-                </div>
 
                 <br/>
 
@@ -396,7 +393,18 @@
                     </tbody>
                 </table>
 
-                <button id="sell-stock">Sell Stock</button>
+                <br/>
+
+                <table>
+                    <thead>
+                        <th>Date</th>
+                        <th>Closing Value</th>
+                    </thead>
+                    <tbody id="table-stockclose">
+                    </tbody>
+                </table>
+
+                <!-- <button id="sell-stock">Sell Stock</button> -->
             </center>
 
             <br/>
@@ -1052,6 +1060,7 @@
                 var totalValue;
                 var newText;
 
+                // general table
                 newRow = newBody.insertRow(newBody.rows.length);
 
                 numShares = newRow.insertCell(0);
@@ -1070,35 +1079,28 @@
                 oldBody.parentNode.replaceChild(newBody, oldBody);
                 newBody.id = 'table-stocks';
 
-                /*
-                 * STOCKS GRAPH
-                 */
-                // var stocks = new Chart(document.getElementById('chart-stocks').getContext('2d'), {
-                //     type: 'line',
-                //     options: {
-                //         title: {
-                //             display: true,
-                //             position: 'top',
-                //             fontSize: 20,
-                //             fontColor: "#373737",
-                //             padding: 10,
-                //             text: "Stock Closing Price"
-                //         },
-                //         legend: {
-                //             display: false
-                //         }
-                //     },
-                //     responsive: false,
-                //     maintainAspectRatio: true,
-                //     data: {
-                //         labels: ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'],
-                //         datasets: [{
-                //             data: [432.54, 567.45, 423.54, 333.45, 677.87,],
-                //         borderColor: "#1d1e22",
-                //         backgroundColor: "rgb(0,0,0,0)"
-                //         }]
-                //     }
-                // });
+                // closing values table
+                 newBody = document.createElement('tbody');
+                 
+                 var date;
+                 var closingVal;
+
+                for (var i = 0; i < closingValKeys.length; i++) {
+                    newRow = newBody.insertRow(newBody.rows.length);
+
+                    date = newRow.insertCell(0);
+                    newText = document.createTextNode(closingValKeys[i]);
+                    date.appendChild(newText);
+
+                    closingVal = newRow.insertCell(1);
+                    newText = document.createTextNode(closingValValues[i]);
+                    closingVal.appendChild(newText);
+                }
+
+                oldBody = document.getElementById('table-stockclose');
+                oldBody.parentNode.replaceChild(newBody, oldBody);
+                newBody.id = 'table-stocks';
+
             }
 
             // call to display default selected account
