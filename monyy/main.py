@@ -11,7 +11,7 @@ import json
 @app.route("/")
 def hello():
     # db.drop_all()
-    # db.create_all()
+    db.create_all()
     # db.session.query(Account).delete()
     # db.session.query(User).delete()
     # db.session.query(Transaction).delete()
@@ -20,7 +20,7 @@ def hello():
     # db.session.query(Bond).delete()
     # db.session.query(Transaction_bond).delete()
     # db.session.query(Stock).delete()
-    # #db.session.query(Stock_value).delete()
+    # # db.session.query(Stock_value).delete()
     # db.session.query(Transaction_stock).delete()
     # db.session.query(Debt).delete()
     # db.session.query(Transaction_debt).delete()
@@ -29,7 +29,7 @@ def hello():
     # db.session.query(Transaction_tag).delete()
     # db.session.query(Tag).delete()
     # db.session.query(Account_tag).delete()
-    # db.session.commit()
+    db.session.commit()
     # BAATest()
     # BondTest()
     # DebtTest()
@@ -88,6 +88,8 @@ def index():
     bonds = {}
     realestate = {}
     debts = {}
+    net_worth = 0
+    days_left = 0
     baa = BankAccountAccessor()
     ba = BondAccessor()
     da = DebtAccessor()
@@ -193,7 +195,8 @@ def index():
                 'account_associated' : pay_account_name,
             }
             debts[debt_name] = temp
-    except:
+    except Exception as error:
+        print(error)
         temp = {
                 'remaining' : '',
                 'principal' : '',
@@ -276,6 +279,14 @@ def index():
 
                             },
     }
+    try:
+        net_worth = netWorth(current_user)
+    except Exception as error:
+        print(error)
+    try:
+        days_left=Bankrupcy(current_user, net_worth)
+    except Exception as error:
+        print(error)
     cash = json.dumps(cash)
     bonds = json.dumps(bonds)
     realestate = json.dumps(realestate)
@@ -287,6 +298,8 @@ def index():
     # print(debt)
     # print(stocks)
     return render_template('index.html', 
+                            rampcount = days_left,
+                            networth = net_worth,
                             username = current_user.user_name,
                             cash=cash,
                             stocks=stocks,

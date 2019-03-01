@@ -17,6 +17,93 @@ def ownershipCheck(temp_user, temp_account):
     if not temp_user.user_id == temp_account.user_id:
         raise Exception("This account does not belong to the current user!")
 
+
+def netWorth(temp_user, temp_datetime=datetime.now()):
+    #Make the accessors
+    baa = BankAccountAccessor()
+    ba = BondAccessor()
+    da = DebtAccessor()
+    sa = StockAccessor()
+    ra = RealEstateAccessor()
+    net_worth = 0
+    try:
+        #Get the bank accounts
+        bank_accounts = baa.getUserAccounts(temp_user)
+        for account in bank_accounts:
+            #Get a transaction
+            #getTransactionsOnDate(self,temp_user, temp_account, temp_limit, temp_date):
+            trans = baa.getTransactionsOnDate(temp_user, account, 1, temp_datetime.date())[0]
+            #def getBalance(self,temp_user, temp_account, temp_transaction, temp_date=date.today())
+            balance = baa.getBalance(temp_user, account, trans.Transaction, temp_date=temp_datetime.date())
+            net_worth=net_worth+balance
+        print(net_worth)
+    except Exception as error:
+        print(error)
+    try:
+        #get bond accounts
+        bond_accounts = ba.getUserAccounts(temp_user)
+        for account in bond_accounts:
+            trans = ba.getAllTransactions(temp_user, account)[0]
+            #getBalance(self,temp_user, temp_account, temp_transaction, temp_date=date.today()):
+            balance = ba.getBalance(temp_user, account, trans.Transaction, temp_date=temp_datetime.date());
+            net_worth = net_worth+balance
+        print(net_worth)
+    except Exception as error:
+        print(error)
+    try:
+        #Debt
+        debt_accounts = da.getUserAccounts(temp_user)
+        for account in debt_accounts:
+            #getTransactionsOnDate(self,temp_user, temp_account, temp_limit, temp_date):
+            trans = da.getTransactionsOnDate(temp_user, account, 1, temp_datetime.date())[0]
+            #getBalance(self,temp_user, temp_account, temp_transaction, temp_date=date.today()):
+            balance = da.getBalance(temp_user, account, trans.Transaction, temp_date=temp_datetime.date())
+            net_worth=net_worth+balance
+        print(net_worth)
+    except Exception as error:
+        print(error)
+    try:
+        #Real Estate
+        real_estates = ra.getUserAccounts(temp_user)
+        for account in real_estates:
+            trans = ra.getTransactionsOnDate(temp_user, account, 1, temp_date=temp_datetime.date())[0]
+            balance = ra.getBalance(temp_user, account, trans.Transaction, temp_date=temp_datetime.date())
+            net_worth=net_worth+balance
+        print(net_worth)
+    except Exception as error:
+        print(error)
+    try:
+        #Stocks
+        stock_accounts = sa.getUserAccounts(temp_user)
+        for account in stock_accounts:
+            #getTransactions(self,temp_user, temp_account, temp_limit, temp_date=date.today()):
+            trans = sa.getTransactions(temp_user, account, 1, temp_date=temp_datetime.date())[0]
+            #getBalance(self,temp_user, temp_account, temp_transaction, temp_stock_symbol, temp_datetime=datetime.now()):
+            balance = sa.getBalance(temp_user, account, trans.Transaction, trans.Stock.stock_symbol, temp_datetime=temp_datetime)
+            net_worth=net_worth+balance
+        print(net_worth)
+    except Exception as error:
+        print(error)
+    return net_worth
+
+def Bankrupcy(temp_user, net_worth_today):
+    thirty_days = datetime.now()-timedelta(days=30)
+    net_worth_past = netWorth(temp_user, temp_datetime=thirty_days)
+    m = net_worth_today-net_worth_past
+    m = m/30
+    if m<0:
+        days=int(net_worth_today*m)
+        days=abs(days)
+        num_days="Going down: "+str(days)
+    else:
+        days = int(net_worth_today*m)
+        num_days="Going up: "+str(days)
+    return num_days
+
+
+
+
+
 class BankAccountAccessor():
 
 
@@ -111,6 +198,7 @@ class BankAccountAccessor():
         #Query on the transaction where account_id = temo_account id, sum on the transaction value where the transaction id <= temp_transaction_id and date <= Date
         query = db.session.query(func.sum(Transaction.transaction_value
             ).label('balance')
+            ).order_by(Transaction.transaction_date.desc()
             ).filter_by(account_id=temp_account.account_id
             ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
             ).filter(Transaction.transaction_date<=temp_date
@@ -307,6 +395,7 @@ class BondAccessor():
         #Query on the transaction where account_id = temo_account id, sum on the transaction value where the transaction id <= temp_transaction_id and date <= Date
         query = db.session.query(func.sum(Transaction.transaction_value
             ).label('balance')
+            ).order_by(Transaction.transaction_date.desc()
             ).filter_by(account_id=temp_account.account_id
             ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
             ).filter(Transaction.transaction_date<=temp_date
@@ -522,6 +611,7 @@ class StockAccessor():
         temp_date = temp_datetime.date()
         query = db.session.query(func.sum(Transaction.transaction_value
             ).label('balance')
+            ).order_by(Transaction.transaction_date.desc()
             ).filter_by(account_id=temp_account.account_id
             ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
             ).filter(Transaction.transaction_date<=temp_date
@@ -740,6 +830,7 @@ class DebtAccessor():
         #Query on the transaction where account_id = temo_account id, sum on the transaction value where the transaction id <= temp_transaction_id and date <= Date
         query = db.session.query(func.sum(Transaction.transaction_value
             ).label('balance')
+            ).order_by(Transaction.transaction_date.desc()
             ).filter_by(account_id=temp_account.account_id
             ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
             ).filter(Transaction.transaction_date<=temp_date
@@ -998,6 +1089,7 @@ class RealEstateAccessor():
         #Query on the transaction where account_id = temo_account id, sum on the transaction value where the transaction id <= temp_transaction_id and date <= Date
         query = db.session.query(func.sum(Transaction.transaction_value
             ).label('balance')
+            ).order_by(Transaction.transaction_date.desc()
             ).filter_by(account_id=temp_account.account_id
             ).filter(Transaction.transaction_id<=temp_transaction.transaction_id
             ).filter(Transaction.transaction_date<=temp_date
