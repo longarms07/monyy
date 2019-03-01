@@ -128,6 +128,15 @@ button {
     color: white;
 }
 
+.helplogout {
+    background-color: #d4d4dc;
+    border: none;
+    padding: 5px 10px;
+    font-family: "Times New Roman", Times, serif;
+    color: #1d1e22;
+    float: right;
+}
+
 
 
 /*********

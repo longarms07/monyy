@@ -70,7 +70,7 @@ def register():
             return redirect("/login")
         login_user(user, remember=form.remember_me.data)
         return redirect("/index")
-    return render_template('login.html', title='Register', form=form)
+    return render_template('logout.html', title='Register', form=form)
 
 
 @app.route("/logout")
@@ -78,6 +78,10 @@ def register():
 def logout():
     logout_user()
     return redirect("/login")
+
+@app.route('/help', methods=['GET'])
+def helppage():
+    return render_template('help.html')
 
 
 @app.route("/index", methods=['GET', 'POST'])
