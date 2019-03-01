@@ -5,7 +5,7 @@
 
   <head>
     <title>Monyy</title>
-    <script src="../static/js/Chart.js"></script>
+    <!-- <script src="../static/js/Chart.js"></script> -->
     <script src="../static/js/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../static/style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
@@ -295,7 +295,7 @@
             <div class="popup" id="add-debt-popup">
                 <form class="form-container" action="/index/debt" method='post' role='add_debt'>
 
-                    <h1>Add Real Debt</h1>
+                    <h1>Add Debt</h1>
 
                     <label for="name"><b>Name/Lender</b></label>
                     <input type="text" placeholder="Enter Lender" name="name" id="form-debt-name" required>
@@ -1080,13 +1080,13 @@
                 newBody.id = 'table-stocks';
 
                 // closing values table
-                 newBody = document.createElement('tbody');
+                var newBody2 = document.createElement('tbody');
                  
-                 var date;
-                 var closingVal;
+                var date;
+                var closingVal;
 
                 for (var i = 0; i < closingValKeys.length; i++) {
-                    newRow = newBody.insertRow(newBody.rows.length);
+                    newRow = newBody2.insertRow(newBody2.rows.length);
 
                     date = newRow.insertCell(0);
                     newText = document.createTextNode(closingValKeys[i]);
@@ -1097,9 +1097,9 @@
                     closingVal.appendChild(newText);
                 }
 
-                oldBody = document.getElementById('table-stockclose');
-                oldBody.parentNode.replaceChild(newBody, oldBody);
-                newBody.id = 'table-stocks';
+                var oldBody2 = document.getElementById('table-stockclose');
+                oldBody2.parentNode.replaceChild(newBody2, oldBody2);
+                newBody2.id = 'table-stockclose';
 
             }
 

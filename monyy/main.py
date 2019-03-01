@@ -296,7 +296,7 @@ def index():
                                 'cost_per_share' : 2.45,
                                 'total_value' : 45768987,
                                 'closing_values' : {
-                                                        'date1' : 432.15,
+                                                        '1' : 432.15,
                                                         'date2' : 543.26,
                                                         'date3' : 123.56,
                                                         'date4' : 432.67,
@@ -317,7 +317,7 @@ def index():
                                 'cost_per_share' : 2.45,
                                 'total_value' : 45768987,
                                 'closing_values' : {
-                                                        'date1' : 432.15,
+                                                        '2' : 432.15,
                                                         'date2' : 543.26,
                                                         'date3' : 123.56,
                                                         'date4' : 432.67,
@@ -338,7 +338,7 @@ def index():
                                 'cost_per_share' : 2.45,
                                 'total_value' : 45768987,
                                 'closing_values' : {
-                                                        'date1' : 432.15,
+                                                        '3' : 432.15,
                                                         'date2' : 543.26,
                                                         'date3' : 123.56,
                                                         'date4' : 432.67,
