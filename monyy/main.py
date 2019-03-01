@@ -330,9 +330,9 @@ def addTransVals():
     year = int(request.form['year'])
     amount = int(request.form['amount'])
     new_date = date(year,month,day)
-    if request.form['deduction']!=null and request.form['deduction']=="yes":
+    if request.form['deduction']=="yes" or request.form['deduction']=="Yes" or request.form['deduction']=="Y":
         deduction = True
-    elif request.form['deduction']!=null and request.form['deduction']=="no":
+    elif request.form['deduction']=="no" or request.form['deduction']=="No" or request.form['deduction']=="N":
         deduction = False
     else:
         raise Exception("not a valid response")

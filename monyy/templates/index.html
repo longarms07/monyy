@@ -189,8 +189,8 @@
                     <label for="amount"><b>Amount</b></label>
                     <input type="text" placeholder="Enter Transaction Amount" name="amount" id="form-cashtrans-amount" required>
 
-                    <label for="deduction"><b>Deduction?</b></label>
-                    <input type="checkbox" name="deduction" id="form-cashtrans-deduction">
+                    <label for="deduction"><b>Deduction? (Please type "Y" or "N")</b></label>
+                    <input type="text" placeholder="Y/N" name="deduction" id="form-cashtrans-deduction" required>
 
                     <center>
                         <button type="submit" onclick="post('/index/banktrans', 'add_trans')">Add</button>
