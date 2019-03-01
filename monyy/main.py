@@ -554,6 +554,6 @@ def addDebtVals():
     return redirect("/index")
 
 
-@app.route('/help')
+@app.route('/help', methods=['GET'])
 def help():
     return render_template('help.html')
