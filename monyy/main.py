@@ -323,13 +323,14 @@ def addAccValues():
 def addTransVals():
     baa = BankAccountAccessor()
     digits = request.form['digits']
-    digits = str(digits)
     name = request.form['name']
-    day = request.form['date']
-    month = request.form['date']
-    year = request.form['date']
-    amount = request.form['amount']
-    date = date(year,month,day)
+    day = int(request.form['day'])
+    month = int(request.form['month'])
+    year = int(request.form['year'])
+    amount = int(request.form['amount'])
+    new_date = date(year,month,day)
+    deduction = request.form['deduction']
+    print(deduction)
     try:
         info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
                 ).join(Transaction
@@ -346,8 +347,8 @@ def addTransVals():
 
 
 
-    l = [digits, name, date, amount, date]
-    print(l)
+    # l = [digits, name, new_date, amount]
+    # print(l)
 
     # try:
         #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
@@ -391,9 +392,12 @@ def addStockVals():
 # @login_required
 def addBondVals():
     ba = BondAccessor()
-    acct_name = request.add_bond['name']
-    value = request.add_bond['value']
-    mat_date = request.add_bond['date']
+    acct_name = request.form['name']
+    value = int(request.form['value'])
+    day = int(request.form['day'])
+    month = int(request.form['month'])
+    year = int(request.form['year'])
+    mat_date = date(year,month,day)
 
     # l = [name, value, mat_date]
     # print(l)
@@ -409,9 +413,9 @@ def addBondVals():
 # @login_required
 def addEstateVals():
     rea = RealEstateAccessor()
-    name = request.add_estate['name']
-    orig_value = request.add_estate['origvalue']
-    est_value = request.add_estate['estvalue']
+    name = request.form['name']
+    orig_value = request.form['origvalue']
+    est_value = request.form['estvalue']
 
     # l = [name, orig_value, est_value]
     # print(l)
@@ -427,11 +431,11 @@ def addEstateVals():
 # @login_required
 def addDebtVals():
     da = DebtAccessor()
-    name = request.add_debt['name']
-    prin = request.add_debt['principal']
-    inter = request.add_debt['interest']
-    per = request.add_debt['period']
-    digits = request.add_debt['digits']
+    name = request.form['name']
+    prin = int(request.form['principal'])
+    inter = request.form['interest']
+    per = request.form['period']
+    digits = request.form['debt-acct']
 
     try:
         info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
@@ -449,7 +453,7 @@ def addDebtVals():
     # print(l)
 
     try:
-        da.makeAccount(current_user, name, prin, name, acct_num, per, inter)
+        da.makeAccount(current_user, name, prin, name, info.Account, per, inter)
     except Exception as error:
         print(error)
 
