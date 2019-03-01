@@ -305,7 +305,7 @@ def addAccValues():
     bank = request.form['bank']
     acct_name = request.form['acct-name']
     acct_num = request.form['account']
-    #balance = request.form['balance']
+    balance = request.form['balance']
     #print(bank)
     #print(acct_name)
     #print(acct_num)
