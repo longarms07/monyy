@@ -481,6 +481,7 @@ def addStockVals():
     # baa = BankAccountAccessor()
     symbol = request.add_stock['symbol']
     num_shares = request.add_stock['shares']
+    digits = request.add_stock['digits']
 
     l = [symbol, num_shares]
     print(l)
