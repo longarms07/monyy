@@ -322,6 +322,7 @@ def addAccValues():
 # @login_required
 def addTransVals():
     baa = BankAccountAccessor()
+    
     digits = request.form['digits']
     name = request.form['name']
     day = int(request.form['day'])
@@ -329,9 +330,15 @@ def addTransVals():
     year = int(request.form['year'])
     amount = int(request.form['amount'])
     new_date = date(year,month,day)
-    deduction = request.form['deduction']
-    print(deduction)
+    if request.form['deduction']!=null and request.form['deduction']=="yes":
+        deduction = True
+    elif request.form['deduction']!=null and request.form['deduction']=="no":
+        deduction = False
+    else:
+        raise Exception("not a valid response")
+    # print(type(deduction))
     try:
+        
         info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
                 ).join(Transaction
                 ).order_by(Transaction.transaction_id.desc()
@@ -350,6 +357,16 @@ def addTransVals():
     # l = [digits, name, new_date, amount]
     # print(l)
 
+    if deduction:
+        try:
+            baa.makeWithdrawal(current_user, info.Account, amount, name, temp_date=new_date)
+        except Exception as error:
+            print(error)
+    else:
+        try:
+            baa.makeDeposit(current_user, info.Account, amount, name, temp_date=new_date)
+        except Exception as error:
+            print(error)
     # try:
         #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
     #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
