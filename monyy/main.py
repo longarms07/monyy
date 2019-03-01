@@ -221,7 +221,7 @@ def index():
                 #getBalance(self,temp_user, temp_account, temp_transaction, temp_stock, temp_datetime=datetime.today())
                 day = end = start-timedelta(days=on_day)
                 val = sa.getValue(ex_trans.Stock.stock_symbol, temp_datetime=end)
-                closing_vals[end] = val
+                closing_vals[str(end)] = val
                 on_day=on_day+1
             temp = {
                 'num_shares' : num_shares,
@@ -229,7 +229,7 @@ def index():
                 'total_value' : balance,
                 'closing_values' : closing_vals
             }
-            stocks[ex_trans.Stock.symbol] = temp
+            stocks[ex_trans.Stock.stock_symbol] = temp
     except Exception as error:
         print(error)
         stocks = {
@@ -362,8 +362,8 @@ def addTransVals():
 def addStockVals():
     sa = StockAccessor()
     symbol = request.form['symbol']
-    num_shares = request.form['shares']
-    init_price = request.form['value']
+    num_shares = int(request.form['shares'])
+    digits = request.form['digits']
 
     #l = [symbol, num_shares, init_price]
     #print(l)
@@ -390,58 +390,68 @@ def addStockVals():
 @app.route('/index/bond', methods=['POST'])
 # @login_required
 def addBondVals():
-    # baa = BankAccountAccessor()
-    name = request.add_bond['name']
+    ba = BondAccessor()
+    acct_name = request.add_bond['name']
     value = request.add_bond['value']
     mat_date = request.add_bond['date']
 
-    l = [name, value, mat_date]
-    print(l)
+    # l = [name, value, mat_date]
+    # print(l)
 
-    # try:
-        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
-    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
-    # except Exception as error:
-    #     print(error)
+    try:
+        ba.makeAccount(current_user, acct_name, value, mat_date)
+    except Exception as error:
+        print(error)
 
     return redirect("/index")
 
 @app.route('/index/estate', methods=['POST'])
 # @login_required
 def addEstateVals():
-    # baa = BankAccountAccessor()
+    rea = RealEstateAccessor()
     name = request.add_estate['name']
     orig_value = request.add_estate['origvalue']
     est_value = request.add_estate['estvalue']
 
-    l = [name, orig_value, est_value]
-    print(l)
+    # l = [name, orig_value, est_value]
+    # print(l)
 
-    # try:
-        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
-    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
-    # except Exception as error:
-    #     print(error)
+    try:
+        rea.makeAccount(current_user, name, est_value, orig_value)
+    except Exception as error:
+        print(error)
 
     return redirect("/index")
 
 @app.route('/index/debt', methods=['POST'])
 # @login_required
 def addDebtVals():
-    # baa = BankAccountAccessor()
+    da = DebtAccessor()
     name = request.add_debt['name']
     prin = request.add_debt['principal']
     inter = request.add_debt['interest']
     per = request.add_debt['period']
+    digits = request.add_debt['digits']
 
-    l = [name, prin, inter, per]
-    print(l)
+    try:
+        info = db.session.query(Account, Transaction, Transaction_bank_account, Bank_account
+                ).join(Transaction
+                ).order_by(Transaction.transaction_id.desc()
+                ).join(Transaction_bank_account
+                ).join(Bank_account
+                ).filter_by(account_digits = digits
+                ).first()
+        if info is None:
+            raise Exception("Invalid account id!")
+    except Exception as error:
+        print(error)
+    # l = [name, prin, inter, per]
+    # print(l)
 
-    # try:
-        #def makeAccount(self,temp_user, temp_name, temp_value, temp_bank_name, temp_digits)
-    #     baa.makeAccount(current_user, acct_name, balance, bank, acct_num)
-    # except Exception as error:
-    #     print(error)
+    try:
+        da.makeAccount(current_user, name, prin, name, acct_num, per, inter)
+    except Exception as error:
+        print(error)
 
     return redirect("/index")
 

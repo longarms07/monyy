@@ -10,12 +10,23 @@ def returnStock(abbreviation):
 
 def stockPriceOnDay(abbreviation, on_day):
     start = datetime.now()
+    day = on_day
     end = start-timedelta(days=on_day)
-    print(start)
-    print(end)
-    stockprices = get_historical_data(abbreviation, end, start)
-    stockprices_on_end = stockprices[str(end.date())]
-    close_on_end = stockprices_on_end['close']
+    #print(start)
+    #print(end)
+    ok = False
+    while ok is False:
+        try:
+            stockprices = get_historical_data(abbreviation, end, start)
+            stockprices_on_end = stockprices[str(end.date())]
+            close_on_end = stockprices_on_end['close']
+            ok = True
+        except Exception as error:
+            #print("exception is "+str(error))
+            pass
+        day = day+1
+        end = start-timedelta(days=day)
+        #print(day)
     return close_on_end
 
 def closingPricesFrom(abbreviation, on_day):

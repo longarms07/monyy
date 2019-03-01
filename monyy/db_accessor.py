@@ -499,7 +499,7 @@ class StockAccessor():
         #Get number of Days
         try:
             if temp_datetime.date() != date.today():
-                days = (datetime.today()-temp_datetime).Days()
+                days = (datetime.today()-temp_datetime).days
                 value = stockPriceOnDay(temp_stock_symbol, days)
                 return value
             else:
@@ -782,7 +782,7 @@ class DebtAccessor():
         db.session.commit()
 
     #Make a new account
-    def makeAccount(self,temp_user, temp_name, temp_value, temp_lender, temp_account, temp_date):
+    def makeAccount(self,temp_user, temp_name, temp_value, temp_lender, temp_account, temp_period,temp_rate):
         #make an account with the given values
         if temp_value>0:
             temp_value = -temp_value
@@ -811,11 +811,11 @@ class DebtAccessor():
             raise Exception("Could not create account! Error making first transaction! "+str(error))
         #make a bank account with the proper values
         try:
-            new_debt = Debt(lender=temp_lender, principal=temp_value, payment_account=temp_account.account_id,payment_date=temp_date)
+            new_debt = Debt(lender=temp_lender, principal=temp_value,interest_period=temp_period,interest_rate=temp_rate, payment_account=temp_account.account_id)
             db.session.add(new_debt)
             db.session.commit()
             new_debt = Debt.query.filter_by(lender=temp_lender
-                ).filter_by(payment_date=temp_date
+                ).filter_by(interest_period=temp_period
                 ).first()
         except Exception as error:
             raise Exception("Could not create account! Error making debt! "+str(error))
